@@ -1,14 +1,20 @@
 #include "adt-interface.hpp"
 
 #include "adt-interface-top-line.hpp"
+#include "adt-service.hpp"
 #include "imgui.h"
 #include "miniaudio.h"
 
 #include <cstddef>
+#include <windows.h>
+#include <commdlg.h>
 #include <filesystem>
 #include <memory>
+#include <string>
 
 namespace adt {
+    Interface::Interface(Service* service) : service(service) {}
+
     void Interface::UInterface() {
         ImGui::Begin("##top tab", NULL, ImGuiWindowFlags_MenuBar);
 
@@ -32,43 +38,41 @@ namespace adt {
     void Interface::TopBar() {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::Button("open")) {
-                if(!is_file_dialog_open) {
+                if(!flags.finterface->is_file_dialog_open) {
                     OpenFileDialog();
                 }
             } 
 
-            if(!path_to_copy.empty() && !file_existed) {
+            if(!path_to_copy.empty() && !flags.finterface->is_file_existed) {
                 paths.push_back(path_to_copy);
 
                 auto lline = std::make_unique<Lline>();
                 Llines.push_back(std::move(lline));
 
-                file_existed = true;
+                flags.finterface->is_file_existed = true;
                 path_to_copy.clear();
             }
 
-            file_existed = false;
+            flags.finterface->is_file_existed = false;
 
             if(ImGui::Button("info")) {
 
             }
 
-            }        
+        }        
         ImGui::EndMenuBar();
     }
 
     void Interface::TopSection(float width, float height) {
         ImGui::BeginChild("TopSection", ImVec2(0, height), true);
 
-        if(!load_top) {
-            load_top = true;
+        if(!flags.finterface->is_load_top_menu) {
+            flags.finterface->is_load_top_menu = true;
             auto tline = std::make_unique<Tline>();
-            Tlines.push_back(std::move(tline));
+            this->tline = std::move(tline);
         }
-
-        for(auto& tl: Tlines) {
-            tl->lineUI("name top");
-        }
+        
+        tline->lineUI("name top");
 
         ImGui::EndChild();
     }
@@ -92,20 +96,20 @@ namespace adt {
         ImGui::BeginChild("BottomSection", ImVec2(width, height), true);
         if (ImGui::Button("play")) {
             if (is_selected_left != -1) {
-                audio_player.playAudioFile(paths[is_selected_left], is_playing);
+                audio_player.playAudioFile(paths[is_selected_left], flags.finterface->is_playing_audio);
             } else if (is_selected_right != -1) {
-                audio_player.playAudioFile(paths_out[is_selected_right], is_playing);
+                audio_player.playAudioFile(paths_out[is_selected_right], flags.finterface->is_playing_audio);
             }
         }
 
         ImGui::SameLine();
 
         if(ImGui::Button("stop")) {
-            if(is_playing) {
+            if(flags.finterface->is_playing_audio) {
                 if(is_selected_left != -1) {
-                    audio_player.stopAudioFile(is_playing);
+                    audio_player.stopAudioFile(flags.finterface->is_playing_audio);
                 } else if(is_selected_right != -1) {
-                    audio_player.stopAudioFile(is_playing);
+                    audio_player.stopAudioFile(flags.finterface->is_playing_audio);
                 }
             }
         }
@@ -116,14 +120,14 @@ namespace adt {
             audio_player.SetVolume(cur_volume);
         }
 
-        if(is_playing) {
+        if(flags.finterface->is_playing_audio) {
             length = audio_player.GetAudioLength();
-            current_time = audio_player.GetTime(is_playing);
+            current_time = audio_player.GetTime(flags.finterface->is_playing_audio);
         }
 
         ImGui::PushItemWidth(300);
         if (ImGui::SliderFloat("Time line", &current_time, 0.0f, length, "%.2f")) {
-            audio_player.SetTime(is_playing, current_time);
+            audio_player.SetTime(flags.finterface->is_playing_audio, current_time);
         }
         
         ImGui::EndChild();
@@ -155,11 +159,11 @@ namespace adt {
                     is_selected_right = -1;
                 }
 
-                if(is_selected_left && Tlines[0]->IsShouldRun()) {
-                    Tlines[0]->SetPaths(name_out_dir, paths[i]);
+                if(is_selected_left && tline->IsShouldRun()) {
+                    tline->SetPaths(name_out_dir, paths[i]);
                 }
 
-                Llines[i]->lineUI(paths[i]);
+                Llines[i]->lineUI(paths[i].string());
             }
 
             ImGui::PopStyleColor();
@@ -174,7 +178,7 @@ namespace adt {
         ImGui::BeginChild("RightPanel", ImVec2(width, height), true);
         ImGui::BeginGroup();
 
-        if(Tlines[0]->GetCanView() && Rlines.size() < Llines.size()) {
+        if(tline->GetCanView() && Rlines.size() < Llines.size()) {
             auto rline = std::make_unique<Rline>();
             Rlines.push_back(std::move(rline));
 
@@ -202,9 +206,9 @@ namespace adt {
 
                 if(is_selected_right != -1 && is_selected_left != -1) {
                     is_selected_left = -1;
-                }                
+                }
 
-                Rlines[i]->lineUI(paths_out[i]);
+                Rlines[i]->lineUI(paths_out[i].string());
             }
 
             ImGui::PopStyleColor();
@@ -217,25 +221,30 @@ namespace adt {
     }
 
     void Interface::OpenFileDialog() {
-        is_file_dialog_open = true;
+        flags.finterface->is_file_dialog_open = true;
 
         future = std::async(std::launch::async, [this]() -> void {
-            char buffer[1024];
-            FILE* pipe = popen("zenity --file-selection --title='Select a file' --file-filter='Audio files (*.wav) | *.wav' --file-filter='All files (*.*) | *.*'", "r");
-            if (!pipe) return;
+            char buffer[MAX_PATH] = { 0 };
 
-            fgets(buffer, sizeof(buffer), pipe);
-            pclose(pipe);
-            
-            std::string path = buffer;
-            path.erase(path.find_last_not_of("\n") + 1);
+            OPENFILENAME ofn;
+            ZeroMemory(&ofn, sizeof(ofn));
+            ofn.lStructSize = sizeof(ofn);
+            ofn.hwndOwner = nullptr;
+            ofn.lpstrFilter = "Audio files (*.wav)\0*.wav\0All files (*.*)\0*.*\0";
+            ofn.lpstrFile = buffer;
+            ofn.nMaxFile = MAX_PATH;
+            ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
-            {
-                std::lock_guard<std::mutex> lock(path_mutex);
-                path_to_copy = std::filesystem::path(path);
+            if (GetOpenFileName(&ofn)) {
+                std::string path = buffer;
+
+                {
+                    std::lock_guard<std::mutex> lock(path_mutex);
+                    path_to_copy = std::filesystem::path(path);
+                }
             }
 
-            is_file_dialog_open = false;
+            flags.finterface->is_file_dialog_open = false;
         });
     }
 
@@ -244,7 +253,7 @@ namespace adt {
     }
 
     void Interface::IsShouldDelteSMTH() {
-        if(Tlines[0]->GetDeleteCurrent() && is_selected_left != -1) {
+        if(tline->GetDeleteCurrent() && is_selected_left != -1) {
             Llines.erase(Llines.begin() + is_selected_left);
             paths.erase(paths.begin() + is_selected_left);
 

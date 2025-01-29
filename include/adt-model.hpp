@@ -12,8 +12,12 @@ namespace adt {
 
         void run();
         void wait();
+
         int getExitCode() const;
+
         void SetPaths(std::filesystem::path &name_out_dir, std::filesystem::path &path_to_file);
+
+        bool isTaskFinished();
 
         private:
         const std::filesystem::path path_to_script = "../model/model.py";

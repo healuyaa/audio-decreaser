@@ -1,5 +1,6 @@
 #include "adt-window.hpp"
 
+#include "adt-service.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -8,7 +9,7 @@
 #include <string>
 
 namespace adt {
-    Window::Window(int w, int h, std::string name) : width(w), height(h), window_name(name) {
+    Window::Window(int w, int h, std::string name, Service* service) : width(w), height(h), window_name(name), service(service) {
         initWindow();
         initUInterface();
     }
@@ -92,34 +93,3 @@ namespace adt {
         ImGui_ImplOpenGL3_Init(glsl_version);
     }
 }
-
-
-
-
-
-
-
-
-
-// ImGui::Image((void*)(intptr_t)iconTexture, ImVec2(64.0f, 64.0f));
-// ImGui::SameLine();
-// ImGui::SetCursorPosY((64.0f - ImGui::GetFontSize() - 30.0f) / 2.0f);
-// ImGui::Text("compresed-test-song.wav");
-
-// ImGui::SameLine();
-
-// ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 32.0f - 5.0f);
-// ImGui::SetCursorPosY(32.0f);
-// if(ImGui::InvisibleButton("##iconButton", ImVec2(32.0f, 32.0f))) {
-//     nfdchar_t *outPath = NULL;
-//     nfdresult_t result = NFD_PickFolder(NULL, &outPath);
-
-//     if(result == NFD_OKAY) {
-//         std::cout << "path: " << outPath << std::endl;
-//     } else {
-//         std::cerr << "err\n";
-//     }
-// }
-
-// ImGui::SetCursorScreenPos(ImGui::GetItemRectMin());
-// ImGui::Image((void*)(intptr_t)iconTexture_, ImVec2(32.0f, 32.0f));

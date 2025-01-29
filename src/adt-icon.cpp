@@ -7,7 +7,7 @@
 namespace adt {
     Icon::Icon(const std::filesystem::path path) {
         int width, height, channels;
-        unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 4);
+        unsigned char* data = stbi_load(path.string().c_str(), &width, &height, &channels, 4);
         if (!data) {
             throw std::runtime_error("Failed to load texture: " + path.string());
         }

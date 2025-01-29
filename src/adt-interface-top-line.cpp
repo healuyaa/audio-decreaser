@@ -1,6 +1,7 @@
 #include "adt-interface-top-line.hpp"
 
 #include "adt-icon.hpp"
+#include "adt-model.hpp"
 #include "imgui.h"
 
 #include <cstdint>
@@ -35,8 +36,9 @@ namespace adt {
             if (is_hovered["output_dir"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                 is_file_dialog_open = true;
                 file_dialog_future = std::async(std::launch::async, [this] {
-                    const char *command = "nautilus ../ADOutput";
-                    system(command); 
+                    // const char *command = "nautilus ../ADOutput";                    
+                    // system(command); 
+                    std::cout << "here dir out ";
 
                     is_file_dialog_open = false;
                 });
@@ -131,11 +133,18 @@ namespace adt {
                 if(!path_to_file.empty()) {
                     model.SetPaths(name_output_dir, path_to_file);
                     model.run();
-                    model.wait();
-                    is_should_run = false;
+                }
+            }
+
+            if(is_in_progress) {
+                if(model.isTaskFinished()) {
+                    is_in_progress = false;
+                    is_should_run = true;
+
                     if(model.getExitCode() == 0) {
                         is_can_view = true;
-                        is_in_progress = false;
+                    } else {
+                        std::cerr << "task failed, code: " << model.getExitCode() << std::endl;
                     }
                 }
             }
@@ -161,12 +170,13 @@ namespace adt {
         ImGui::EndChild();
     }
 
-    void Tline::loadIcon() {
-        icons["file_delete"] = std::make_unique<Icon>(icon_file_delete);
-
+    void Tline::loadIcon() {       
         icons["folder_show"] = std::make_unique<Icon>(icon_folder_show);
-        icons["folder_hide"] = std::make_unique<Icon>(icon_folder_hide);        
+        icons["folder_hide"] = std::make_unique<Icon>(icon_folder_hide);
+
         icons["folder_pick"] = std::make_unique<Icon>(icon_folder_pick);
+        
+        icons["file_delete"] = std::make_unique<Icon>(icon_file_delete);
     }
 
     Icon* Tline::getIcon(const std::string name) {

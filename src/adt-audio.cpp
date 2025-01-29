@@ -8,7 +8,7 @@ namespace adt {
         result = ma_engine_init(NULL, &engine);
 
         if(result != MA_SUCCESS) {
-            throw std::runtime_error("Failed to initialize audio engine.");            
+            throw std::runtime_error("Failed to initialize audio engine.");
         }
     }
 

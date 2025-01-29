@@ -1,11 +1,9 @@
-#include "gtk/gtk.h"
 #include "run-app.hpp"
 
 #include <iostream>
 #include <exception>
 
 int main(int argc, char** argv) {
-    gtk_init(&argc, &argv);
     adt::App app{};
 
     try {

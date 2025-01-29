@@ -14,13 +14,12 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/stb-image
     ${CMAKE_SOURCE_DIR}/include/minaudio
-    ${GTK3_INCLUDE_DIRS}
-    ${wxWidgets_USE_FILE}
+    ${CMAKE_SOURCE_DIR}/include/GLFW
 )
 
-find_package(glfw3 REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+# find_package(glfw3 REQUIRED)
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
 add_executable(audio-decreaser ${SOURCES})
 
@@ -40,14 +39,10 @@ add_library(imgui
 target_include_directories(imgui
     PUBLIC ${CMAKE_SOURCE_DIR}/include/imgui
     PUBLIC ${CMAKE_SOURCE_DIR}/include/imgui/backends
-    PUBLIC ${GTK3_INCLUDE_DIRS}
 )
 
-link_directories(/usr/lib/x86_64-linux-gnu)
 target_link_libraries(audio-decreaser
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/GLFW/glfw3.dll
     PRIVATE glad
-    PRIVATE glfw
     PRIVATE imgui
-    PRIVATE ${GTK3_LIBRARIES}
-    PRIVATE ${wxWidgets_LIBRARIES}
 )

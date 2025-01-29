@@ -47,8 +47,8 @@ namespace adt {
     }
 
     void Model::makeCommand() {
-        std::cout << name_out_dir.string() + "/" + path_to_file.filename().string();
-        command = "python3 -m encodec " + path_to_file.string() + " " + name_out_dir.string() + "/" + path_to_file.filename().string();
+        std::cout << name_out_dir.string() + "/" + path_to_file.filename().string() << "\n";
+        command = "encodec " + path_to_file.string() + " " + name_out_dir.string() + "/" + path_to_file.filename().string();
         std::cout << "Generated command: " << command << std::endl;
     }
 
@@ -60,4 +60,13 @@ namespace adt {
             return -1;
         }
     }
+
+    bool Model::isTaskFinished() {
+    if (resultFuture_.valid()) {
+        isRunning_ = false;
+        return resultFuture_.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+    }
+    return false;
+}
+
 }
