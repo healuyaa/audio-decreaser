@@ -1,0 +1,1 @@
+### Audio-decreaser it's a application write based on C++ and python. C++ - GUI, multythreads realisation, audio. Python for AI model for compress audio-files, diffrent types. Ai model based on facebookreserch EnCodec model/

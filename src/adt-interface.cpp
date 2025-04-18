@@ -3,7 +3,6 @@
 #include "adt-interface-top-line.hpp"
 #include "adt-service.hpp"
 #include "imgui.h"
-#include "miniaudio.h"
 
 #include <cstddef>
 #include <windows.h>
@@ -16,19 +15,17 @@ namespace adt {
     Interface::Interface(Service* service) : service(service) {}
 
     void Interface::UInterface() {
-        ImGui::Begin("##top tab", NULL, ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("##top tab", NULL);
 
-        TopBar();
+        // TopBar();
 
         ImVec2 window_size = ImGui::GetContentRegionAvail();
 
         float top_section_height = window_size.y * 0.11f;
-        float mid_section_height = window_size.y * 0.74f - ImGui::GetStyle().ItemSpacing.y;
-        float bot_section_height = window_size.y - mid_section_height - top_section_height - ImGui::GetStyle().ItemSpacing.y - ImGui::GetStyle().ItemSpacing.y;
+        float mid_section_height = window_size.y * 0.89f - ImGui::GetStyle().ItemSpacing.y;
 
         TopSection(window_size.x, top_section_height);
         MidSection(window_size.x, mid_section_height);
-        BotSection(window_size.x, bot_section_height);
 
         // IsShouldDelteSMTH();
 
@@ -92,47 +89,6 @@ namespace adt {
         ImGui::EndChild();
     }
 
-    void Interface::BotSection(float width, float height) {
-        ImGui::BeginChild("BottomSection", ImVec2(width, height), true);
-        if (ImGui::Button("play")) {
-            if (is_selected_left != -1) {
-                audio_player.playAudioFile(paths[is_selected_left], flags.finterface->is_playing_audio);
-            } else if (is_selected_right != -1) {
-                audio_player.playAudioFile(paths_out[is_selected_right], flags.finterface->is_playing_audio);
-            }
-        }
-
-        ImGui::SameLine();
-
-        if(ImGui::Button("stop")) {
-            if(flags.finterface->is_playing_audio) {
-                if(is_selected_left != -1) {
-                    audio_player.stopAudioFile(flags.finterface->is_playing_audio);
-                } else if(is_selected_right != -1) {
-                    audio_player.stopAudioFile(flags.finterface->is_playing_audio);
-                }
-            }
-        }
-
-        auto cur_volume = audio_player.GetVolume();
-        ImGui::PushItemWidth(100);
-        if (ImGui::SliderFloat("Volume", &cur_volume, 0.0f, 1.0f, "%.2f")) {
-            audio_player.SetVolume(cur_volume);
-        }
-
-        if(flags.finterface->is_playing_audio) {
-            length = audio_player.GetAudioLength();
-            current_time = audio_player.GetTime(flags.finterface->is_playing_audio);
-        }
-
-        ImGui::PushItemWidth(300);
-        if (ImGui::SliderFloat("Time line", &current_time, 0.0f, length, "%.2f")) {
-            audio_player.SetTime(flags.finterface->is_playing_audio, current_time);
-        }
-        
-        ImGui::EndChild();
-    }
-
     void Interface::LeftSection(float width, float height) {
         ImGui::BeginChild("LeftSection", ImVec2(width, height), true);
         ImGui::BeginGroup();
@@ -159,7 +115,7 @@ namespace adt {
                     is_selected_right = -1;
                 }
 
-                if(is_selected_left && tline->IsShouldRun()) {
+                if(is_selected_left) {
                     tline->SetPaths(name_out_dir, paths[i]);
                 }
 
@@ -178,7 +134,7 @@ namespace adt {
         ImGui::BeginChild("RightPanel", ImVec2(width, height), true);
         ImGui::BeginGroup();
 
-        if(tline->GetCanView() && Rlines.size() < Llines.size()) {
+        if(Rlines.size() < Llines.size()) {
             auto rline = std::make_unique<Rline>();
             Rlines.push_back(std::move(rline));
 
@@ -215,7 +171,6 @@ namespace adt {
             ImGui::EndChild();
         }
 
-
         ImGui::EndGroup();
         ImGui::EndChild();
     }
@@ -250,17 +205,5 @@ namespace adt {
 
     std::filesystem::path Interface::GetOutDir() {
         return name_out_dir;
-    }
-
-    void Interface::IsShouldDelteSMTH() {
-        if(tline->GetDeleteCurrent() && is_selected_left != -1) {
-            Llines.erase(Llines.begin() + is_selected_left);
-            paths.erase(paths.begin() + is_selected_left);
-
-            if(is_selected_left < Rlines.size()) {
-                Rlines.erase(Rlines.begin() + is_selected_left);
-                paths_out.erase(paths_out.begin() + is_selected_left);
-            }
-        }
     }
 }

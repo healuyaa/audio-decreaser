@@ -1,6 +1,5 @@
 #pragma once
 
-#include "adt-audio.hpp"
 #include "adt-interface-left-line.hpp"
 #include "adt-interface-right-line.hpp"
 #include "adt-file-tools.hpp"
@@ -29,8 +28,6 @@ namespace adt {
 
         Service* service;
 
-        Audio audio_player;
-
         float current_time = 0.0f;
         float length = 0.0f;
 
@@ -51,13 +48,10 @@ namespace adt {
         void TopBar();
         void TopSection(float width = 0.0f, float height = 0.0f);
         void MidSection(float width = 0.0f, float height = 0.0f);
-        void BotSection(float width = 0.0f, float height = 0.0f);
 
         void LeftSection(float width = 0.0f, float height = 0.0f);
         void RightSection(float width = 0.0f, float height = 0.0f);
 
         void OpenFileDialog();
-
-        void IsShouldDelteSMTH();
     };    
 }

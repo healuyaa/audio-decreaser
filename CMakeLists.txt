@@ -13,8 +13,8 @@ file(GLOB SOURCES
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/stb-image
-    ${CMAKE_SOURCE_DIR}/include/minaudio
     ${CMAKE_SOURCE_DIR}/include/GLFW
+    ${CMAKE_SOURCE_DIR}/include/libsnd
 )
 
 # find_package(glfw3 REQUIRED)
@@ -45,4 +45,5 @@ target_link_libraries(audio-decreaser
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/GLFW/glfw3.dll
     PRIVATE glad
     PRIVATE imgui
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/sndfile/sndfile.lib
 )

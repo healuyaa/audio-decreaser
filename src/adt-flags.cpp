@@ -5,5 +5,6 @@ namespace adt {
     Flags::Flags() {
         finterface = std::make_unique<FInterface>();
         faudio = std::make_unique<FAudio>();
+        ftopline = std::make_unique<FTopLine>();
     }
 }
