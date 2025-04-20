@@ -1,10 +1,24 @@
 #include "adt-flags.hpp"
-#include <memory>
 
 namespace adt {
-    Flags::Flags() {
-        finterface = std::make_unique<FInterface>();
-        faudio = std::make_unique<FAudio>();
-        ftopline = std::make_unique<FTopLine>();
+    Flags &Flags::getInstance() {
+        static Flags instance;
+        return instance;
+    }
+
+    void Flags::SetLoadTopMenu(bool b) {
+        finterface.is_load_top_menu = b;
+    }
+
+    bool Flags::GetLoadTopMenu() {
+        return finterface.is_load_top_menu;
+    }
+
+    void Flags::SetFileDialogOpen(bool b) {
+        finterface.is_file_dialog_open = b;
+    }
+
+    bool Flags::GetFileDialogOpen() {
+        return finterface.is_file_dialog_open;
     }
 }

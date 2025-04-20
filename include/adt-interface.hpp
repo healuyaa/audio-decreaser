@@ -43,7 +43,7 @@ namespace adt {
         std::filesystem::path name_out_dir = "../ADOutput";
 
         FileTools tools{};
-        Flags flags{};
+        Flags& flags = Flags::getInstance();
         
         void TopBar();
         void TopSection(float width = 0.0f, float height = 0.0f);

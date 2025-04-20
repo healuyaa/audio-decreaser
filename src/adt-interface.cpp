@@ -32,39 +32,39 @@ namespace adt {
         ImGui::End();
     }
 
-    void Interface::TopBar() {
-        if (ImGui::BeginMenuBar()) {
-            if (ImGui::Button("open")) {
-                if(!flags.finterface->is_file_dialog_open) {
-                    OpenFileDialog();
-                }
-            } 
+    // void Interface::TopBar() {
+    //     if (ImGui::BeginMenuBar()) {
+    //         if (ImGui::Button("open")) {
+    //             if(!flags.finterface->is_file_dialog_open) {
+    //                 OpenFileDialog();
+    //             }
+    //         } 
 
-            if(!path_to_copy.empty() && !flags.finterface->is_file_existed) {
-                paths.push_back(path_to_copy);
+    //         if(!path_to_copy.empty() && !flags.finterface->is_file_existed) {
+    //             paths.push_back(path_to_copy);
 
-                auto lline = std::make_unique<Lline>();
-                Llines.push_back(std::move(lline));
+    //             auto lline = std::make_unique<Lline>();
+    //             Llines.push_back(std::move(lline));
 
-                flags.finterface->is_file_existed = true;
-                path_to_copy.clear();
-            }
+    //             flags.finterface->is_file_existed = true;
+    //             path_to_copy.clear();
+    //         }
 
-            flags.finterface->is_file_existed = false;
+    //         flags.finterface->is_file_existed = false;
 
-            if(ImGui::Button("info")) {
+    //         if(ImGui::Button("info")) {
+                
+    //         }
 
-            }
-
-        }        
-        ImGui::EndMenuBar();
-    }
+    //     }        
+    //     ImGui::EndMenuBar();
+    // }
 
     void Interface::TopSection(float width, float height) {
         ImGui::BeginChild("TopSection", ImVec2(0, height), true);
 
-        if(!flags.finterface->is_load_top_menu) {
-            flags.finterface->is_load_top_menu = true;
+        if(!flags.GetLoadTopMenu()) {
+            flags.SetLoadTopMenu(true);
             auto tline = std::make_unique<Tline>();
             this->tline = std::move(tline);
         }
@@ -176,7 +176,7 @@ namespace adt {
     }
 
     void Interface::OpenFileDialog() {
-        flags.finterface->is_file_dialog_open = true;
+        flags.SetFileDialogOpen(true);
 
         future = std::async(std::launch::async, [this]() -> void {
             char buffer[MAX_PATH] = { 0 };
@@ -199,7 +199,7 @@ namespace adt {
                 }
             }
 
-            flags.finterface->is_file_dialog_open = false;
+            flags.SetFileDialogOpen(false);
         });
     }
 

@@ -21,6 +21,8 @@ include_directories(
 # find_package(PkgConfig REQUIRED)
 # pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g") // check this
+
 add_executable(audio-decreaser ${SOURCES})
 
 add_library(glad ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
