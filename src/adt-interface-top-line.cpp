@@ -1,38 +1,41 @@
 #include "adt-interface-top-line.hpp"
 
+#include "adt-flags.hpp"
 #include "adt-icon.hpp"
-#include "adt-model.hpp"
+#include "adt-paths.hpp"
 #include "imgui.h"
 
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <string>
+#include <windows.h>
 
 namespace adt {
     Tline::Tline() {
-        // loadIcon();
+        loadIcon();
         initIsHovered();
     }
 
     void Tline::lineUI(const std::string& name) {
         ImVec2 size{160.0f, 50.0f};
 
-        IsHoveredTopitem(is_hovered["select_file"]);
+        IsHoveredTopitem(is_hovered["load_file"]);
         
-        ImGui::BeginChild("##file to compress", size, true);
+        ImGui::BeginChild("##load_file", size, true);
         {
-            // ImGui::Image((void*)(intptr_t) icons["select_file"]->GetID(), ImVec2(32.0f, 32.0f));
+            ImGui::Image((void*)(intptr_t) icons["load_file"]->GetID(), ImVec2(32.0f, 32.0f));
 
-            is_hovered["select_file"] = ImGui::IsWindowHovered();
+            is_hovered["load_file"] = ImGui::IsWindowHovered();
 
             ImGui::SameLine();
 
-            ImGui::Text("select_file");
+            ImGui::Text("load_file");
 
-            if (is_hovered["select_file"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                is_file_dialog_open = true;                
-                std::cout << "here select_file" << std::endl;                
+            if (is_hovered["load_file"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFileDialogOpen()) {
+                OpenFileDialog();
+                std::cout << "here load_file" << std::endl;
             }
         }
         ImGui::PopStyleColor();
@@ -40,25 +43,42 @@ namespace adt {
 
         ImGui::SameLine();
 
-        IsHoveredTopitem(is_hovered["open_output"]);
+        IsHoveredTopitem(is_hovered["load_group_files"]);
         
-        ImGui::BeginChild("##open_output", size, true);
+        ImGui::BeginChild("##load_group_files", size, true);
         {
-            // ImGui::Image((void*)(intptr_t) icons["open_output"]->GetID(), ImVec2(32.0f, 32.0f));
+            ImGui::Image((void*)(intptr_t) icons["load_group_files"]->GetID(), ImVec2(32.0f, 32.0f));
 
-            is_hovered["open_output"] = ImGui::IsWindowHovered();
+            is_hovered["load_group_files"] = ImGui::IsWindowHovered();
 
             ImGui::SameLine();
 
-            ImGui::Text("open_output");
+            ImGui::Text("load_group_files");
 
-            if (is_hovered["open_output"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                is_file_dialog_open = true;
-                file_dialog_future = std::async(std::launch::async, [this] {
-                    std::cout << "here open_output" << std::endl;
+            if (is_hovered["load_group_files"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFileDialogOpenDir()) {
+                Flags::getInstance().SetFileDialogOpenDir(true);
+                std::cout << "here load_group_files" << std::endl;
+            }
+        }
+        ImGui::PopStyleColor();
+        ImGui::EndChild();
 
-                    is_file_dialog_open = false;
-                });
+        ImGui::SameLine();
+
+        IsHoveredTopitem(is_hovered["output_folder"]);
+        
+        ImGui::BeginChild("##output_folder", size, true);
+        {
+            ImGui::Image((void*)(intptr_t) icons["output_folder"]->GetID(), ImVec2(32.0f, 32.0f));
+
+            is_hovered["output_folder"] = ImGui::IsWindowHovered();
+
+            ImGui::SameLine();
+
+            ImGui::Text("output_folder");
+
+            if (is_hovered["output_folder"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                Flags::getInstance().SetOpenOutput(true);
             }
         }
         ImGui::PopStyleColor();
@@ -72,7 +92,7 @@ namespace adt {
         {
             is_hovered["compress"] = ImGui::IsWindowHovered();
 
-            // ImGui::Image((void*)(intptr_t) icons["compress"]->GetID(), ImVec2(32.0f, 32.0f));
+            ImGui::Image((void*)(intptr_t) icons["compress"]->GetID(), ImVec2(32.0f, 32.0f));
 
             ImGui::SameLine();
 
@@ -93,7 +113,7 @@ namespace adt {
         {
             is_hovered["settings"] = ImGui::IsWindowHovered();
 
-            // ImGui::Image((void*)(intptr_t) icons["settings"]->GetID(), ImVec2(32.0f, 32.0f));
+            ImGui::Image((void*)(intptr_t) icons["settings"]->GetID(), ImVec2(32.0f, 32.0f));
 
             ImGui::SameLine();
 
@@ -105,51 +125,14 @@ namespace adt {
         }
         ImGui::PopStyleColor();
         ImGui::EndChild();
-
-        // ImGui::BeginChild("##run", size, true);
-        // {
-        //     is_hovered["run"] = ImGui::IsWindowHovered();
-
-        //     ImGui::Text("run");
-
-        //     if (is_hovered["run"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-        //         is_should_run = false;
-        //         is_in_progress = false;
-        //         std::cout << "clicked run" << std::endl;
-        //     }
-
-        //     if(!is_should_run && !is_in_progress) {
-        //         is_in_progress = true;
-        //         if(!path_to_file.empty()) {
-        //             model.SetPaths(name_output_dir, path_to_file);
-        //             model.run();
-        //         }
-        //     }
-
-        //     if(is_in_progress) {
-        //         if(model.isTaskFinished()) {
-        //             is_in_progress = false;
-        //             is_should_run = true;
-
-        //             if(model.getExitCode() == 0) {
-        //                 is_can_view = true;
-        //             } else {
-        //                 std::cerr << "task failed, code: " << model.getExitCode() << std::endl;
-        //             }
-        //         }
-        //     }
-        // }
-        // ImGui::PopStyleColor();
-        // ImGui::EndChild();
     }
 
     void Tline::loadIcon() {       
-        icons["select_file"] = std::make_unique<Icon>(icon_select_file);
-        icons["open_output"] = std::make_unique<Icon>(icon_open_output);
-
-        icons["compress"] = std::make_unique<Icon>(icon_compress);
-        
-        icons["settings"] = std::make_unique<Icon>(icon_settings);
+        icons["load_file"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_load_file"));
+        icons["load_group_files"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_load_group_files"));
+        icons["output_folder"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_output_folder"));
+        icons["compress"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_compress"));
+        icons["settings"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_settings"));
     }
 
     Icon* Tline::getIcon(const std::string name) {
@@ -160,16 +143,6 @@ namespace adt {
         return nullptr;
     }
 
-    // void Tline::IsHoveredIcon(Icon* current, Icon* hovered) {
-    //     ImVec2 size{32.0f, 32.0f};
-    //     ImGui::InvisibleButton("##hover_icon", size);
-
-    //     Icon* icon_to_render = ImGui::IsItemHovered() ? hovered : current;
-    //     ImGui::SetCursorScreenPos(ImGui::GetItemRectMin());
-
-    //     ImGui::Image((void*)(intptr_t)icon_to_render->GetID(), size);
-    // }
-
     void Tline::IsHoveredTopitem(bool is_hovered) {
         if(is_hovered) {
             ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.0f, 0.0f, 0.1f));
@@ -179,14 +152,39 @@ namespace adt {
     }
 
     void Tline::initIsHovered() {
-        is_hovered["select_file"] = false;
-        is_hovered["open_output"] = false;
+        is_hovered["load_file"] = false;
+        is_hovered["load_group_files"] = false;
+        is_hovered["output_folder"] = false;
         is_hovered["compress"] = false;
         is_hovered["settings"] = false;        
     }
 
-    void Tline::SetPaths(std::filesystem::path name_output_dir, std::filesystem::path path_to_file) {
-        this->name_output_dir = name_output_dir;
-        this->path_to_file = (path_to_file);
+    void Tline::OpenFileDialog() {
+        Flags::getInstance().SetFileDialogOpen(true);
+
+        future = std::async(std::launch::async, [this]() -> void {
+            char buffer[MAX_PATH] = { 0 };
+
+            OPENFILENAME ofn;
+            ZeroMemory(&ofn, sizeof(ofn));
+            ofn.lStructSize = sizeof(ofn);
+            ofn.hwndOwner = nullptr;
+            ofn.lpstrFilter = "Audio files (*.wav)\0*.wav\0All files (*.*)\0*.*\0";
+            ofn.lpstrFile = buffer;
+            ofn.nMaxFile = MAX_PATH;
+            ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+
+            if (GetOpenFileName(&ofn)) {
+                std::string path = buffer;
+
+                {
+                    std::lock_guard<std::mutex> lock(mutex_);
+                    Paths::getInstance().addTempPath(std::to_string(id), path);
+                    ++id;
+                }
+            }
+
+            Flags::getInstance().SetFileDialogOpen(false);
+        });
     }
 }

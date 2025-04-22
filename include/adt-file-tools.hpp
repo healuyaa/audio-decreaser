@@ -1,18 +1,29 @@
 #pragma once
 
 #include <filesystem>
+#include <vector>
+#include <string>
 
 namespace adt {
     class FileTools {
         public:
-        FileTools();
-        ~FileTools() = default;
 
-        void CopyFile(const std::filesystem::path &path);
+        static FileTools &getInstance();
+
+        const void copyFileAudio(const std::string& main_file);
+
+        const void deleteFragments(const std::vector<std::string>& paths);
+        const void delete_audio(const std::string& path);
+
+        const std::string utf16to1251(const std::filesystem::path& path);
+
+        const void initDirs();
 
         private:
-        const std::filesystem::path path_to_out_dir = "../ADOutput";
+        FileTools() = default;
+        ~FileTools() = default;
 
         void initOutDir();
+        void initTempDir();
     };
 }

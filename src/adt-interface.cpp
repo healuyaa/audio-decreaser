@@ -1,6 +1,9 @@
 #include "adt-interface.hpp"
 
+#include "adt-file-tools.hpp"
+#include "adt-flags.hpp"
 #include "adt-interface-top-line.hpp"
+#include "adt-paths.hpp"
 #include "adt-service.hpp"
 #include "imgui.h"
 
@@ -12,17 +15,17 @@
 #include <string>
 
 namespace adt {
-    Interface::Interface(Service* service) : service(service) {}
+    Interface::Interface(Service* service) : service(service) {
+        FileTools::getInstance().initDirs();
+    }
 
     void Interface::UInterface() {
         ImGui::Begin("##top tab", NULL);
 
-        // TopBar();
-
         ImVec2 window_size = ImGui::GetContentRegionAvail();
 
-        float top_section_height = window_size.y * 0.11f;
-        float mid_section_height = window_size.y * 0.89f - ImGui::GetStyle().ItemSpacing.y;
+        float top_section_height = window_size.y * 0.11f; // 11
+        float mid_section_height = window_size.y * 0.89f - ImGui::GetStyle().ItemSpacing.y; // 89
 
         TopSection(window_size.x, top_section_height);
         MidSection(window_size.x, mid_section_height);
@@ -63,8 +66,8 @@ namespace adt {
     void Interface::TopSection(float width, float height) {
         ImGui::BeginChild("TopSection", ImVec2(0, height), true);
 
-        if(!flags.GetLoadTopMenu()) {
-            flags.SetLoadTopMenu(true);
+        if(!Flags::getInstance().GetLoadTopMenu()) {
+            Flags::getInstance().SetLoadTopMenu(true);
             auto tline = std::make_unique<Tline>();
             this->tline = std::move(tline);
         }
@@ -116,7 +119,7 @@ namespace adt {
                 }
 
                 if(is_selected_left) {
-                    tline->SetPaths(name_out_dir, paths[i]);
+                    // tline->SetPaths(Paths::getInstance().GetPath("output_dit"), paths[i]);
                 }
 
                 Llines[i]->lineUI(paths[i].string());
@@ -138,7 +141,7 @@ namespace adt {
             auto rline = std::make_unique<Rline>();
             Rlines.push_back(std::move(rline));
 
-            std::filesystem::path path_to_out = name_out_dir / paths[is_selected_left].filename();
+            std::filesystem::path path_to_out = std::filesystem::path(Paths::getInstance().GetPath("output_dir")) / paths[is_selected_left].filename();
             paths_out.push_back(path_to_out);
         }
 
@@ -173,37 +176,5 @@ namespace adt {
 
         ImGui::EndGroup();
         ImGui::EndChild();
-    }
-
-    void Interface::OpenFileDialog() {
-        flags.SetFileDialogOpen(true);
-
-        future = std::async(std::launch::async, [this]() -> void {
-            char buffer[MAX_PATH] = { 0 };
-
-            OPENFILENAME ofn;
-            ZeroMemory(&ofn, sizeof(ofn));
-            ofn.lStructSize = sizeof(ofn);
-            ofn.hwndOwner = nullptr;
-            ofn.lpstrFilter = "Audio files (*.wav)\0*.wav\0All files (*.*)\0*.*\0";
-            ofn.lpstrFile = buffer;
-            ofn.nMaxFile = MAX_PATH;
-            ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
-
-            if (GetOpenFileName(&ofn)) {
-                std::string path = buffer;
-
-                {
-                    std::lock_guard<std::mutex> lock(path_mutex);
-                    path_to_copy = std::filesystem::path(path);
-                }
-            }
-
-            flags.SetFileDialogOpen(false);
-        });
-    }
-
-    std::filesystem::path Interface::GetOutDir() {
-        return name_out_dir;
     }
 }
