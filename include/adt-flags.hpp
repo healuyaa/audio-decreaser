@@ -8,7 +8,7 @@ namespace adt {
         Flags() = default;
         ~Flags() = default;
 
-        static Flags &getInstance();
+        static Flags& getInstance();
 
         //methods for set/get bool flags from FInterface
         void SetLoadTopMenu(bool);
@@ -19,8 +19,8 @@ namespace adt {
         void SetFileDialogOpen(bool);
         bool GetFileDialogOpen();
 
-        void SetFileDialogOpenDir(bool);
-        bool GetFileDialogOpenDir();
+        void SetFolderDialog(bool);
+        bool GetFolderDialog();
 
         void SetOpenOutput(bool);
         bool GetOpenOutput();
@@ -46,7 +46,7 @@ namespace adt {
         // struct of all bool flags which uses in adt-interface-top-line.hpp
         struct FTopLine {
             bool is_open_file_dialog = false;
-            bool is_open_file_dialog_dir = false;
+            bool is_open_folder_dialog = false;
             bool is_open_output = false;
             bool is_compress = false;
             bool is_setting = false;

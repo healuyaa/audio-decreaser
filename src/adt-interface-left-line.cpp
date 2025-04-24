@@ -1,5 +1,6 @@
 #include "adt-interface-left-line.hpp"
 
+#include "adt-paths.hpp"
 #include "imgui.h"
 
 #include <cstdint>
@@ -35,7 +36,7 @@ namespace adt {
     }
 
     void Lline::loadIcon() {
-        icons["audio"] = std::make_unique<Icon>(icon_audio);
+        icons["audio"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_audio"));
     }
 
     Icon* Lline::getIcon(const std::string name) {

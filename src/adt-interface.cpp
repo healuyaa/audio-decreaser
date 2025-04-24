@@ -30,38 +30,8 @@ namespace adt {
         TopSection(window_size.x, top_section_height);
         MidSection(window_size.x, mid_section_height);
 
-        // IsShouldDelteSMTH();
-
         ImGui::End();
     }
-
-    // void Interface::TopBar() {
-    //     if (ImGui::BeginMenuBar()) {
-    //         if (ImGui::Button("open")) {
-    //             if(!flags.finterface->is_file_dialog_open) {
-    //                 OpenFileDialog();
-    //             }
-    //         } 
-
-    //         if(!path_to_copy.empty() && !flags.finterface->is_file_existed) {
-    //             paths.push_back(path_to_copy);
-
-    //             auto lline = std::make_unique<Lline>();
-    //             Llines.push_back(std::move(lline));
-
-    //             flags.finterface->is_file_existed = true;
-    //             path_to_copy.clear();
-    //         }
-
-    //         flags.finterface->is_file_existed = false;
-
-    //         if(ImGui::Button("info")) {
-                
-    //         }
-
-    //     }        
-    //     ImGui::EndMenuBar();
-    // }
 
     void Interface::TopSection(float width, float height) {
         ImGui::BeginChild("TopSection", ImVec2(0, height), true);

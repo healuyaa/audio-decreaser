@@ -14,13 +14,13 @@ namespace adt {
         // dir paths
 
         // assets paths
-        registerPath("icon_load_file", "../assets/load-file.png"); // includes in file adt-inteface-top-line
-        registerPath("icon_load_group_files", "../assets/load-group-files.png"); // includes in file adt-inteface-top-line
-        registerPath("icon_output_folder", "../assets/output-folder.png"); // includes in file adt-inteface-top-line
-        registerPath("icon_compress", "../assets/compress.png"); // includes in file adt-inteface-top-line
-        registerPath("icon_settings", "../assets/settings.png"); // includes in file adt-inteface-top-line
-        registerPath("icon_audio", "../assets/audio.png"); // includes in file adt-inteface-left-line
-        registerPath("icon_audio_ai", "../assets/audio-ai.png"); // includes in file adt-inteface-right-line
+        registerPath("icon_load_file", "../assets/load-file.png"); // includes in file adt-inteface-top-line 32px
+        registerPath("icon_load_group_files", "../assets/load-group-files.png"); // includes in file adt-inteface-top-line 32px
+        registerPath("icon_output_folder", "../assets/output-folder.png"); // includes in file adt-inteface-top-line 32px
+        registerPath("icon_compress", "../assets/compress.png"); // includes in file adt-inteface-top-line 32px
+        registerPath("icon_settings", "../assets/settings.png"); // includes in file adt-inteface-top-line 32px
+        registerPath("icon_audio", "../assets/audio.png"); // includes in file adt-inteface-left-line 64px
+        registerPath("icon_audio_ai", "../assets/audio-ai.png"); // includes in file adt-inteface-right-line 64px
         // assets paths
     }
 

@@ -27,12 +27,12 @@ namespace adt {
         return ftopline.is_open_file_dialog;
     }
     
-    void Flags::SetFileDialogOpenDir(bool b) {
-        ftopline.is_open_file_dialog_dir = b;
+    void Flags::SetFolderDialog(bool b) {
+        ftopline.is_open_folder_dialog = b;
     }
 
-    bool Flags::GetFileDialogOpenDir() {
-        return ftopline.is_open_file_dialog_dir;
+    bool Flags::GetFolderDialog() {
+        return ftopline.is_open_folder_dialog;
     }
 
     void Flags::SetOpenOutput(bool b) {

@@ -1,5 +1,6 @@
 #include "adt-interface-top-line.hpp"
 
+#include "adt-file-dialog.hpp"
 #include "adt-flags.hpp"
 #include "adt-icon.hpp"
 #include "adt-paths.hpp"
@@ -10,12 +11,11 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <windows.h>
 
 namespace adt {
     Tline::Tline() {
         loadIcon();
-        initIsHovered();
+        initIsHovered();        
     }
 
     void Tline::lineUI(const std::string& name) {
@@ -34,7 +34,8 @@ namespace adt {
             ImGui::Text("load_file");
 
             if (is_hovered["load_file"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFileDialogOpen()) {
-                OpenFileDialog();
+                dialog = std::make_shared<adt::ADTFileDialog>();
+                dialog->OpenFileDialog();
                 std::cout << "here load_file" << std::endl;
             }
         }
@@ -55,8 +56,9 @@ namespace adt {
 
             ImGui::Text("load_group_files");
 
-            if (is_hovered["load_group_files"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFileDialogOpenDir()) {
-                Flags::getInstance().SetFileDialogOpenDir(true);
+            if (is_hovered["load_group_files"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFolderDialog()) {
+                dialog = std::make_shared<adt::ADTFileDialog>();
+                dialog->OpenFolderDialog();
                 std::cout << "here load_group_files" << std::endl;
             }
         }
@@ -77,8 +79,10 @@ namespace adt {
 
             ImGui::Text("output_folder");
 
-            if (is_hovered["output_folder"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                Flags::getInstance().SetOpenOutput(true);
+            if (is_hovered["output_folder"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetOpenOutput()) {
+                dialog = std::make_shared<adt::ADTFileDialog>();                                     
+                dialog->OpenOutputDir(Paths::getInstance().GetPath("output_dir"));
+                std::cout << "here output_folder" << std::endl;
             }
         }
         ImGui::PopStyleColor();
@@ -157,34 +161,5 @@ namespace adt {
         is_hovered["output_folder"] = false;
         is_hovered["compress"] = false;
         is_hovered["settings"] = false;        
-    }
-
-    void Tline::OpenFileDialog() {
-        Flags::getInstance().SetFileDialogOpen(true);
-
-        future = std::async(std::launch::async, [this]() -> void {
-            char buffer[MAX_PATH] = { 0 };
-
-            OPENFILENAME ofn;
-            ZeroMemory(&ofn, sizeof(ofn));
-            ofn.lStructSize = sizeof(ofn);
-            ofn.hwndOwner = nullptr;
-            ofn.lpstrFilter = "Audio files (*.wav)\0*.wav\0All files (*.*)\0*.*\0";
-            ofn.lpstrFile = buffer;
-            ofn.nMaxFile = MAX_PATH;
-            ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
-
-            if (GetOpenFileName(&ofn)) {
-                std::string path = buffer;
-
-                {
-                    std::lock_guard<std::mutex> lock(mutex_);
-                    Paths::getInstance().addTempPath(std::to_string(id), path);
-                    ++id;
-                }
-            }
-
-            Flags::getInstance().SetFileDialogOpen(false);
-        });
     }
 }

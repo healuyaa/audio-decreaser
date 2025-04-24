@@ -58,7 +58,7 @@ const void delete_audio(std::filesystem::path& path) {
         std::cout << "delete audio complete" << std::endl;
 }
 
-int m123() {
+void m123() {
     std::filesystem::path inputFile = "C:/tools/audio/s1.wav";
 
     copy_file_audio(inputFile);

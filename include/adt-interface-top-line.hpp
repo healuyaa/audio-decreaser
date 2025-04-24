@@ -1,8 +1,9 @@
 #pragma once
 
+#include "adt-file-dialog.hpp"
 #include "adt-interface-Iline.hpp"
 
-#include <future>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -25,10 +26,6 @@ namespace adt {
         void IsHoveredTopitem(bool is_hovered);
         void initIsHovered();
 
-        std::future<void> future;
-        std::mutex mutex_;
-        int id = 0;
-
-        void OpenFileDialog();
+        std::shared_ptr<adt::ADTFileDialog> dialog;
     };
 }

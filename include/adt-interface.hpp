@@ -23,9 +23,6 @@ namespace adt {
 
         Service* service;
 
-        float current_time = 0.0f;
-        float length = 0.0f;
-
         int is_selected_left = -1;
         int is_selected_right = -1;
 
