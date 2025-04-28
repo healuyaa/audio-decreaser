@@ -15,6 +15,14 @@ namespace adt {
     bool Flags::GetLoadTopMenu() {
         return finterface.is_load_top_menu;
     }
+
+    void Flags::SetLoadRightLine(bool b) {
+        finterface.is_load_right_line = b;
+    }
+
+    bool Flags::GetLoadRightLine() {
+        return finterface.is_load_right_line;
+    }
     //methods for set/get bool flags from FInterface
 
 

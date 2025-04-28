@@ -18,8 +18,11 @@ namespace adt {
         registerPath("icon_load_group_files", "../assets/load-group-files.png"); // includes in file adt-inteface-top-line 32px
         registerPath("icon_output_folder", "../assets/output-folder.png"); // includes in file adt-inteface-top-line 32px
         registerPath("icon_compress", "../assets/compress.png"); // includes in file adt-inteface-top-line 32px
+        registerPath("icon_delete", "../assets/delete-all-files.png"); // includes in file adt-inteface-top-line 32px
         registerPath("icon_settings", "../assets/settings.png"); // includes in file adt-inteface-top-line 32px
         registerPath("icon_audio", "../assets/audio.png"); // includes in file adt-inteface-left-line 64px
+        registerPath("recycle_bin", "../assets/recycle-bin.png"); // includes in file adt-inteface-left-line 24px
+        registerPath("open_file", "../assets/open-file-location.png"); // includes in file adt-inteface-left-line 24px
         registerPath("icon_audio_ai", "../assets/audio-ai.png"); // includes in file adt-inteface-right-line 64px
         // assets paths
     }
@@ -67,6 +70,11 @@ namespace adt {
     void Paths::removeTempPath(const std::string& id) {
         std::lock_guard<std::mutex> lock(mutex_);
         temp_pool.erase(id);
+    }
+
+    std::size_t Paths::GetSizeTempPool() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return temp_pool.size();
     }
 
     void Paths::clearTempPath() {

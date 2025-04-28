@@ -111,6 +111,27 @@ namespace adt {
 
         ImGui::SameLine();
 
+        IsHoveredTopitem(is_hovered["delete"]);
+
+        ImGui::BeginChild("##delete", size, true);
+        {
+            is_hovered["delete"] = ImGui::IsWindowHovered();
+
+            ImGui::Image((void*)(intptr_t) icons["delete"]->GetID(), ImVec2(32.0f, 32.0f));
+
+            ImGui::SameLine();
+
+            ImGui::Text("delete");
+
+            if (is_hovered["delete"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                std::cout << "here delete" << std::endl;
+            }
+        }
+        ImGui::PopStyleColor();
+        ImGui::EndChild();
+
+        ImGui::SameLine();
+
         IsHoveredTopitem(is_hovered["settings"]);
 
         ImGui::BeginChild("##settings", size, true);
@@ -136,7 +157,8 @@ namespace adt {
         icons["load_group_files"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_load_group_files"));
         icons["output_folder"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_output_folder"));
         icons["compress"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_compress"));
-        icons["settings"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_settings"));
+        icons["delete"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_delete"));
+        icons["settings"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_settings")); // icon_delete
     }
 
     Icon* Tline::getIcon(const std::string name) {

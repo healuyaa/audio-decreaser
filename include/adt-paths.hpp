@@ -16,6 +16,7 @@ namespace adt {
         void addTempPath(const std::string& id, const std::string& path);
         void removeTempPath(const std::string& id);
         std::string getTempPath(const std::string& id);
+        std::size_t GetSizeTempPool();
 
         void clearTempPath();
 

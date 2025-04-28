@@ -1,5 +1,6 @@
 #include "adt-interface-right-line.hpp"
 
+#include "adt-paths.hpp"
 #include "imgui.h"
 
 namespace adt {
@@ -31,7 +32,7 @@ namespace adt {
     }
 
     void Rline::loadIcon() {
-        icons["audio-ai"] = std::make_unique<Icon>(icon_audio_ai);
+        icons["audio-ai"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_audio_ai"));
     }
 
     Icon* Rline::getIcon(const std::string name) {

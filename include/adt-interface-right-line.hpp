@@ -2,7 +2,6 @@
 
 #include "adt-interface-Iline.hpp"
 
-#include <filesystem>
 #include <unordered_map>
 
 namespace adt {
@@ -14,9 +13,6 @@ namespace adt {
         void lineUI(const std::string& name) override;
 
         private:
-        // const std::filesystem::path icon_audio_ai = "../assets/icon-file-audio-ai.png"; // 64px  
-        const std::filesystem::path icon_audio_ai = "C:/project/audio-decreaser/assets/icon-file-audio-ai.png"; // 64px
-
         std::unordered_map<std::string, std::unique_ptr<Icon>> icons;
 
         void loadIcon() override;

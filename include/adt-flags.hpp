@@ -13,6 +13,9 @@ namespace adt {
         //methods for set/get bool flags from FInterface
         void SetLoadTopMenu(bool);
         bool GetLoadTopMenu();
+
+        void SetLoadRightLine(bool);
+        bool GetLoadRightLine();
         //methods for set/get bool flags from FInterface
 
         //methods for set/get bool flags from FTopline
@@ -40,7 +43,8 @@ namespace adt {
 
         // struct of all bool flags which uses in adt-interface.hpp
         struct FInterface {
-          bool is_load_top_menu = false;
+            bool is_load_top_menu = false;
+            bool is_load_right_line = false;
         };
 
         // struct of all bool flags which uses in adt-interface-top-line.hpp

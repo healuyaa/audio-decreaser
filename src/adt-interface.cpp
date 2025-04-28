@@ -66,6 +66,11 @@ namespace adt {
         ImGui::BeginChild("LeftSection", ImVec2(width, height), true);
         ImGui::BeginGroup();
 
+        if(Paths::getInstance().GetSizeTempPool() != Llines.size()) {
+            auto lline = std::make_unique<Lline>();
+            Llines.push_back(std::move(lline));
+        }
+
         for(int i = 0; i < Llines.size(); ++i) {
             std::string child_id = "##child_id_l" + std::to_string(i);
 
@@ -88,11 +93,7 @@ namespace adt {
                     is_selected_right = -1;
                 }
 
-                if(is_selected_left) {
-                    // tline->SetPaths(Paths::getInstance().GetPath("output_dit"), paths[i]);
-                }
-
-                Llines[i]->lineUI(paths[i].string());
+                Llines[i]->lineUI(Paths::getInstance().getTempPath(std::to_string(i)));
             }
 
             ImGui::PopStyleColor();
@@ -107,12 +108,9 @@ namespace adt {
         ImGui::BeginChild("RightPanel", ImVec2(width, height), true);
         ImGui::BeginGroup();
 
-        if(Rlines.size() < Llines.size()) {
+        if(Rlines.size() < Llines.size() && Flags::getInstance().GetLoadRightLine()) {
             auto rline = std::make_unique<Rline>();
             Rlines.push_back(std::move(rline));
-
-            std::filesystem::path path_to_out = std::filesystem::path(Paths::getInstance().GetPath("output_dir")) / paths[is_selected_left].filename();
-            paths_out.push_back(path_to_out);
         }
 
         for(int i = 0; i < Rlines.size(); ++i) {
@@ -129,7 +127,7 @@ namespace adt {
                     if(is_selected_right == i) {
                         is_selected_right = -1;
                     } else {
-                        is_selected_right = i; 
+                        is_selected_right = i;
                     }                    
                 }
 
@@ -137,7 +135,13 @@ namespace adt {
                     is_selected_left = -1;
                 }
 
-                Rlines[i]->lineUI(paths_out[i].string());
+                std::filesystem::path filename(Paths::getInstance().getTempPath(std::to_string(i)));
+                std::filesystem::path r_path = Paths::getInstance().GetPath("output_dir") / filename.filename();
+
+                if(!std::filesystem::exists(r_path))
+                    return;
+
+                Rlines[i]->lineUI(r_path.string());
             }
 
             ImGui::PopStyleColor();

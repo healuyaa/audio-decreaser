@@ -25,9 +25,6 @@ namespace adt {
 
         int is_selected_left = -1;
         int is_selected_right = -1;
-
-        std::vector<std::filesystem::path> paths;
-        std::vector<std::filesystem::path> paths_out;
         
         void TopBar();
         void TopSection(float width = 0.0f, float height = 0.0f);
