@@ -1,4 +1,5 @@
 #include "adt-audio-compress.hpp"
+#include "adt-paths.hpp"
 
 #include <cstdlib>
 #include <filesystem>
@@ -8,8 +9,8 @@
 
 
 namespace adt {
-    Compress::Compress(const std::vector<std::filesystem::path>& paths, int count_threads) 
-        : paths(paths), count_threads(count_threads) {
+    Compress::Compress(const std::vector<std::string>& paths, bool is_hq_model, int count_threads) 
+        : paths(paths), is_hq_model(is_hq_model), count_threads(count_threads) {
     }
 
     Compress::~Compress() {
@@ -17,8 +18,6 @@ namespace adt {
             if (t.joinable())
                 t.join();
         }
-
-        std::cout << "destructor complete\n";
     }
 
     void Compress::run() {
@@ -27,7 +26,7 @@ namespace adt {
         }
     }
 
-    std::optional<std::filesystem::path> Compress::GetNextElement() {
+    std::optional<std::string> Compress::GetNextElement() {
         std::lock_guard<std::mutex> lock(data_mutex);
 
         if (!paths.empty()) {
@@ -44,7 +43,7 @@ namespace adt {
             auto value = GetNextElement();
             if (!value.has_value()) break;
 
-            auto command = generate_command(value.value()) + " > nul 2>&1";
+            auto command = generate_command(std::filesystem::path(value.value())) + " > nul 2>&1";
 
             {
                 std::lock_guard<std::mutex> lock(cout_mutex);
@@ -60,9 +59,12 @@ namespace adt {
 
     std::string Compress::generate_command(const std::filesystem::path& input) {        
         std::string filename = "compressed_" + input.filename().string();
-        std::filesystem::path output_path = output_dir / std::filesystem::path(filename);
+        std::filesystem::path output_path = std::filesystem::path(Paths::getInstance().GetPath("fragments_dir")) /
+                                            std::filesystem::path(filename);
 
-        std::string command = "cd ../model && model-v2.exe " + utf16to1251(input) + ' ' + utf16to1251(output_path); // + " --hq"
+        std::string command = "cd ../model && model-v2.exe " + utf16to1251(input) + ' ' + utf16to1251(output_path);
+        command += is_hq_model ? " --hq" : "";
+
         return command;
     }
 

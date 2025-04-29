@@ -24,7 +24,7 @@ namespace adt {
 
         ImVec2 window_size = ImGui::GetContentRegionAvail();
 
-        float top_section_height = window_size.y * 0.11f; // 11
+        const float top_section_height = 66.0f; // size top bar
         float mid_section_height = window_size.y * 0.89f - ImGui::GetStyle().ItemSpacing.y; // 89
 
         TopSection(window_size.x, top_section_height);
@@ -74,23 +74,21 @@ namespace adt {
         for(int i = 0; i < Llines.size(); ++i) {
             std::string child_id = "##child_id_l" + std::to_string(i);
 
-            if(is_selected_left == i) {
-                ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.0f, 0.0f, 0.1f));
-            } else {
-                ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-            }
+            bool is_hovered = false;
 
-            if(ImGui::BeginChild(child_id.c_str(), ImVec2(0, 64.0f))) {
-                if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                    if(is_selected_left == i) {
-                        is_selected_left = -1;
-                    } else {
-                        is_selected_left = i;
-                    }
-                }
+            ImVec4 default_bg = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+            ImVec4 hover_bg   = ImVec4(0.1f, 0.1f, 0.1f, 0.15f);
 
-                if(is_selected_right != -1 && is_selected_left != -1) {
-                    is_selected_right = -1;
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, default_bg);
+
+            if (ImGui::BeginChild(child_id.c_str(), ImVec2(0, 64.0f))) { // 80.0f size + spacing
+                is_hovered = ImGui::IsWindowHovered();
+    
+                if (is_hovered) {
+                    ImDrawList* draw = ImGui::GetWindowDrawList();
+                    ImVec2 min = ImGui::GetWindowPos();
+                    ImVec2 max = ImVec2(min.x + ImGui::GetWindowSize().x, min.y + ImGui::GetWindowSize().y);
+                    draw->AddRectFilled(min, max, ImColor(hover_bg));
                 }
 
                 Llines[i]->lineUI(Paths::getInstance().getTempPath(std::to_string(i)));
