@@ -23,7 +23,6 @@ namespace adt {
         FileTools() = default;
         ~FileTools() = default;
 
-        void initOutDir();
         void initTempDir();
     };
 }

@@ -1,5 +1,6 @@
 #include "adt-audio-tools.hpp"
 
+#include "adt-paths.hpp"
 #include "sndfile.h"
 
 #include <filesystem>
@@ -38,7 +39,7 @@ namespace adt {
         
         for(size_t i = 0; i < segment_count; ++i) {
             std::string name_segment = "segment_" + std::to_string(i) + ".wav";
-            std::filesystem::path output_file = std::filesystem::path("../temp/fragments") / std::filesystem::path(name_segment);
+            std::filesystem::path output_file = std::filesystem::path(Paths::getInstance().GetPath("fragments_dir")) / std::filesystem::path(name_segment);
 
             fragment_paths[i] = output_file;
 
@@ -60,7 +61,7 @@ namespace adt {
 
         if(last_segment_frames > 0) {
             std::string name_segment = "segment_" + std::to_string(segment_count) + ".wav";
-            std::filesystem::path output_file = std::filesystem::path("../temp/fragments") / std::filesystem::path(name_segment);
+            std::filesystem::path output_file = std::filesystem::path(Paths::getInstance().GetPath("fragments_dir")) / std::filesystem::path(name_segment);
 
             std::string segment_path = utf16to1251(output_file);
 

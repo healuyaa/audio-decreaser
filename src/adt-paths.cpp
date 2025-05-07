@@ -2,15 +2,15 @@
 
 #include <mutex>
 #include <stdexcept>
+#include <string>
 
 namespace adt {
     Paths::Paths() {
-        // dir paths
-        registerPath("output_dir","../ADoutput"); // Path to ended output dir
-
+        // dir paths       
         registerPath("temp_dir","../temp"); // Path to temp dir for temporary files, which creates as run program
         registerPath("fragments_dir","../temp/fragment"); // Path to subdirectory of temp
         registerPath("audio_dir","../temp/audio"); // Path to subdirectory of temp
+        registerPath("results","../temp/results"); // Path to ended output dir
         // dir paths
 
         // assets paths
@@ -51,10 +51,10 @@ namespace adt {
         }
     }
 
-
-    void Paths::addTempPath(const std::string& id, const std::string& path) {
+    void Paths::addTempPath(const std::string& path) {
         std::lock_guard<std::mutex> lock(mutex_);
-        temp_pool[id] = path;
+        temp_pool[std::to_string(id)] = path;
+        ++id;
     }
 
     std::string Paths::getTempPath(const std::string& id) {

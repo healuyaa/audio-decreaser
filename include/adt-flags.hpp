@@ -35,30 +35,52 @@ namespace adt {
         bool GetSettings();
         //methods for set/get bool flags from FTopline
 
+        //methods for set/get bool flags from FAudioCompress
+        void SetHqModel(bool);
+        bool GetHqModel();
+        //methods for set/get bool flags from FAudioCompress
+
+        //methods for set/get bool flags from FAudioRunner
+        void SetIsCountChangeThreads(bool);
+        bool GetIsCountChangeThreads();
+        //methods for set/get bool flags from FAudioRunner
+
         private:
 
         Flags(const Flags&) = delete;
         Flags& operator=(const Flags&) = delete; 
         
 
-        // struct of all bool flags which uses in adt-interface.hpp
+        // struct of all bool flags which uses in adt-interface.hpp && adt-interface.cpp
         struct FInterface {
             bool is_load_top_menu = false;
             bool is_load_right_line = false;
         };
 
-        // struct of all bool flags which uses in adt-interface-top-line.hpp
+        // struct of all bool flags which uses in adt-interface-top-line.hpp && adt-interface-top-line.cpp
         struct FTopLine {
             bool is_open_file_dialog = false;
             bool is_open_folder_dialog = false;
             bool is_open_output = false;
             bool is_compress = false;
             bool is_setting = false;
-        }; 
+        };
+        
+        // struct of all bool flags which uses in adt-audio-compress.hpp && adt-audio-compress.cpp
+        struct FAudioCompress {
+            bool is_hq_model = false;
+        };
+
+        // struct of all bool flags which uses in adt-audio-run.hpp && adt-audio-run.cpp
+        struct FAudioRunner {
+            bool is_change_count_threads = false;
+        };
 
 
         FInterface finterface;
         FTopLine ftopline;
+        FAudioCompress faudiocompress;
+        FAudioRunner faudiorunner;
 
         mutable std::mutex mutex_;
     };    

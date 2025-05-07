@@ -1,16 +1,19 @@
 #include "adt-audio-compress.hpp"
+#include "adt-audio-tools.hpp"
+#include "adt-flags.hpp"
 #include "adt-paths.hpp"
 
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <stringapiset.h>
 
 
 namespace adt {
-    Compress::Compress(const std::vector<std::string>& paths, bool is_hq_model, int count_threads) 
-        : paths(paths), is_hq_model(is_hq_model), count_threads(count_threads) {
+    Compress::Compress(const std::vector<std::string>& paths, int count_threads) 
+        : paths(paths), count_threads(count_threads) {
     }
 
     Compress::~Compress() {
@@ -62,21 +65,11 @@ namespace adt {
         std::filesystem::path output_path = std::filesystem::path(Paths::getInstance().GetPath("fragments_dir")) /
                                             std::filesystem::path(filename);
 
-        std::string command = "cd ../model && model-v2.exe " + utf16to1251(input) + ' ' + utf16to1251(output_path);
-        command += is_hq_model ? " --hq" : "";
+        tools = std::make_shared<adt::AudioTools>();
+
+        std::string command = "cd ../model && model-v2.exe " + tools->utf16to1251(input) + ' ' + tools->utf16to1251(output_path);
+        command += Flags::getInstance().GetHqModel() ? " --hq" : "";
 
         return command;
-    }
-
-    std::string Compress::utf16to1251(const std::filesystem::path& path) {
-        std::wstring wstr = path.wstring();
-
-        int size_needed = WideCharToMultiByte(1251, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
-
-        std::string str(size_needed - 1, 0);
-
-        WideCharToMultiByte(1251, 0, wstr.c_str(), -1, &str[0], size_needed, nullptr, nullptr);
-
-        return str;
     }
 }

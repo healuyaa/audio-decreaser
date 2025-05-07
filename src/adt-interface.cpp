@@ -134,7 +134,7 @@ namespace adt {
                 }
 
                 std::filesystem::path filename(Paths::getInstance().getTempPath(std::to_string(i)));
-                std::filesystem::path r_path = Paths::getInstance().GetPath("output_dir") / filename.filename();
+                std::filesystem::path r_path = Paths::getInstance().GetPath("results") / filename.filename();
 
                 if(!std::filesystem::exists(r_path))
                     return;

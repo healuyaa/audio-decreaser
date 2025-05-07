@@ -1,11 +1,11 @@
 #include "adt-flags.hpp"
+#include <mutex>
 
 namespace adt {
     Flags &Flags::getInstance() {
         static Flags instance;
         return instance;
     }
-
 
     //methods for set/get bool flags from FInterface
     void Flags::SetLoadTopMenu(bool b) {
@@ -28,43 +28,75 @@ namespace adt {
 
     //methods for set/get bool flags from FTopline
     void Flags::SetFileDialogOpen(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
         ftopline.is_open_file_dialog = b;
     }
 
     bool Flags::GetFileDialogOpen() {
+        std::lock_guard<std::mutex> lock(mutex_);
         return ftopline.is_open_file_dialog;
     }
     
     void Flags::SetFolderDialog(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
         ftopline.is_open_folder_dialog = b;
     }
 
     bool Flags::GetFolderDialog() {
+        std::lock_guard<std::mutex> lock(mutex_);
         return ftopline.is_open_folder_dialog;
     }
 
     void Flags::SetOpenOutput(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
         ftopline.is_open_output = b;
     }
 
     bool Flags::GetOpenOutput() {
+        std::lock_guard<std::mutex> lock(mutex_);
         return ftopline.is_open_output;
     }
 
     void Flags::SetCompress(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
         ftopline.is_compress = b;
     }
 
     bool Flags::GetCompress() {
+        std::lock_guard<std::mutex> lock(mutex_);
         return ftopline.is_compress;
     }
 
     void Flags::SetSettings(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
         ftopline.is_setting = b;
     }
 
     bool Flags::GetSettings() {
+        std::lock_guard<std::mutex> lock(mutex_);
         return ftopline.is_setting;
+    }
+    //methods for set/get bool flags from FTopline
+
+    //methods for set/get bool flags from FTopline
+    void Flags::SetHqModel(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        faudiocompress.is_hq_model = b;
+    }
+
+    bool Flags::GetHqModel() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return faudiocompress.is_hq_model;
+    }
+    //methods for set/get bool flags from FTopline
+
+    //methods for set/get bool flags from FTopline
+    void Flags::SetIsCountChangeThreads(bool b) {
+        faudiorunner.is_change_count_threads = b; 
+    }
+
+    bool Flags::GetIsCountChangeThreads() {
+        return faudiorunner.is_change_count_threads;
     }
     //methods for set/get bool flags from FTopline
 }

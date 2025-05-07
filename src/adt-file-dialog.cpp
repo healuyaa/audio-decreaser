@@ -58,9 +58,8 @@ namespace adt {
     
                 {
                     std::lock_guard<std::mutex> lock(mutex_);
-                    Paths::getInstance().addTempPath(std::to_string(id), path);
-                    std::cout << path << ' ' << id << std::endl;
-                    ++id;
+                    Paths::getInstance().addTempPath(path);
+                    std::cout << path << std::endl;
                 }
     
                 CoTaskMemFree(pszFilePath);
@@ -144,11 +143,9 @@ namespace adt {
             {
                 std::lock_guard<std::mutex> lock(mutex_);
                 for (const auto& wav : wavFiles) {
-                    Paths::getInstance().addTempPath(std::to_string(id), wav.string());
+                    Paths::getInstance().addTempPath(wav.string());
 
-                    std::cout << wav.string() << ' ' << id << std::endl;
-
-                    ++id;
+                    std::cout << wav.string() << std::endl;
                 }
             }
     

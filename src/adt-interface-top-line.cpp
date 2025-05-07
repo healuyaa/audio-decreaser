@@ -1,5 +1,6 @@
 #include "adt-interface-top-line.hpp"
 
+#include "adt-audio-run.hpp"
 #include "adt-file-dialog.hpp"
 #include "adt-flags.hpp"
 #include "adt-icon.hpp"
@@ -11,6 +12,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <thread>
 
 namespace adt {
     Tline::Tline() {
@@ -79,9 +81,9 @@ namespace adt {
 
             ImGui::Text("output_folder");
 
-            if (is_hovered["output_folder"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetOpenOutput()) {
-                dialog = std::make_shared<adt::ADTFileDialog>();                                     
-                dialog->OpenOutputDir(Paths::getInstance().GetPath("output_dir"));
+            if (is_hovered["output_folder"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetOpenOutput()) {                
+                dialog = std::make_shared<adt::ADTFileDialog>();
+                dialog->OpenOutputDir(Paths::getInstance().GetPath("results"));
                 std::cout << "here output_folder" << std::endl;
             }
         }
@@ -102,7 +104,12 @@ namespace adt {
 
             ImGui::Text("compress");
 
-            if (is_hovered["compress"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+            if (is_hovered["compress"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetCompress()) {                                
+                std::thread([]() {
+                    AudioRunner ar;
+                    ar.run();
+                }).detach();
+
                 std::cout << "here compress" << std::endl;
             }
         }

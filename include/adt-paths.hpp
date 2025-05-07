@@ -13,7 +13,7 @@ namespace adt {
 
         std::string_view GetPath(const std::string& name);
 
-        void addTempPath(const std::string& id, const std::string& path);
+        void addTempPath(const std::string& path);
         void removeTempPath(const std::string& id);
         std::string getTempPath(const std::string& id);
         std::size_t GetSizeTempPool();
@@ -27,6 +27,8 @@ namespace adt {
         Paths& operator=(const Paths&) = delete;         
 
         mutable std::mutex mutex_;
+
+        int id = 0;
 
         std::unordered_map<std::string, std::string_view> named_paths;
         std::unordered_set<std::string> path_pool;
