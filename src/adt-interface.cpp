@@ -4,7 +4,6 @@
 #include "adt-flags.hpp"
 #include "adt-interface-top-line.hpp"
 #include "adt-paths.hpp"
-#include "adt-service.hpp"
 #include "imgui.h"
 
 #include <cstddef>
@@ -15,7 +14,7 @@
 #include <string>
 
 namespace adt {
-    Interface::Interface(Service* service) : service(service) {
+    Interface::Interface()  {
         FileTools::getInstance().initDirs();
     }
 
@@ -81,7 +80,7 @@ namespace adt {
 
             ImGui::PushStyleColor(ImGuiCol_ChildBg, default_bg);
 
-            if (ImGui::BeginChild(child_id.c_str(), ImVec2(0, 64.0f))) { // 80.0f size + spacing
+            if (ImGui::BeginChild(child_id.c_str(), ImVec2(0, 64.0f))) { // 64.0f size + spacing
                 is_hovered = ImGui::IsWindowHovered();
     
                 if (is_hovered) {
@@ -114,32 +113,28 @@ namespace adt {
         for(int i = 0; i < Rlines.size(); ++i) {
             std::string child_id = "##child_id_r" + std::to_string(i);
 
-            if(is_selected_right == i) {
-                ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.0f, 0.0f, 0.1f));
-            } else {
-                ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0, 0, 0, 0));
-            }
+            bool is_hovered = false;
 
-            if(ImGui::BeginChild(child_id.c_str(), ImVec2(0, 100.0f))) {
-                if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                    if(is_selected_right == i) {
-                        is_selected_right = -1;
-                    } else {
-                        is_selected_right = i;
-                    }                    
-                }
+            ImVec4 default_bg = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+            ImVec4 hover_bg   = ImVec4(0.1f, 0.1f, 0.1f, 0.15f);
 
-                if(is_selected_right != -1 && is_selected_left != -1) {
-                    is_selected_left = -1;
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, default_bg);
+
+            if(ImGui::BeginChild(child_id.c_str(), ImVec2(0, 64.0f))) {
+                is_hovered = ImGui::IsWindowHovered();
+
+                if (is_hovered) {
+                    ImDrawList* draw = ImGui::GetWindowDrawList();
+                    ImVec2 min = ImGui::GetWindowPos();
+                    ImVec2 max = ImVec2(min.x + ImGui::GetWindowSize().x, min.y + ImGui::GetWindowSize().y);
+                    draw->AddRectFilled(min, max, ImColor(hover_bg));
                 }
 
                 std::filesystem::path filename(Paths::getInstance().getTempPath(std::to_string(i)));
-                std::filesystem::path r_path = Paths::getInstance().GetPath("results") / filename.filename();
+                std::string r_path = std::string(Paths::getInstance().GetPath("results")) + "/compressed_" + filename.filename().string();
+                r_path = std::filesystem::absolute(r_path).string();
 
-                if(!std::filesystem::exists(r_path))
-                    return;
-
-                Rlines[i]->lineUI(r_path.string());
+                Rlines[i]->lineUI(r_path);
             }
 
             ImGui::PopStyleColor();

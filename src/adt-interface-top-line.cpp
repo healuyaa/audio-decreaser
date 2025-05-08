@@ -21,7 +21,7 @@ namespace adt {
     }
 
     void Tline::lineUI(const std::string& name) {
-        ImVec2 size{160.0f, 50.0f};
+        ImVec2 size{160.0f, 50.0f}; // size novigate rectangles
 
         IsHoveredTopitem(is_hovered["load_file"]);
         

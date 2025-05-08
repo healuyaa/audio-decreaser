@@ -1,6 +1,5 @@
 #pragma once
 
-#include "adt-service.hpp"
 #include "adt-window.hpp"
 
 namespace adt {
@@ -12,7 +11,6 @@ namespace adt {
         void run();
 
         private:
-        Window window{WIDTH, HEIGHT, "audio-decreaser", &service};
-        Service service;
+        Window window{WIDTH, HEIGHT, "audio-decreaser"};
     };
 }

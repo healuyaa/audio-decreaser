@@ -86,7 +86,7 @@ namespace adt {
             std::ostringstream oss;
             oss << std::fixed << std::setprecision(1) << size_in_mb << " MB";
             ImGui::Text("%s", oss.str().c_str());
-        }        
+        }
         ImGui::EndGroup();
     
         ImGui::SameLine();

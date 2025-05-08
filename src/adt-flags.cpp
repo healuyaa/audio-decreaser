@@ -17,10 +17,12 @@ namespace adt {
     }
 
     void Flags::SetLoadRightLine(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
         finterface.is_load_right_line = b;
     }
 
     bool Flags::GetLoadRightLine() {
+        std::lock_guard<std::mutex> lock(mutex_);
         return finterface.is_load_right_line;
     }
     //methods for set/get bool flags from FInterface

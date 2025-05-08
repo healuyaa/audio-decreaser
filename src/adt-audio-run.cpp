@@ -15,6 +15,7 @@
 namespace adt {
     void AudioRunner::run() {
         Flags::getInstance().SetCompress(true);
+        Flags::getInstance().SetLoadRightLine(true);
 
         if(Paths::getInstance().GetSizeTempPool() == 0)
             return;
@@ -24,7 +25,7 @@ namespace adt {
         }
 
         for(std::size_t i = 0; i < Paths::getInstance().GetSizeTempPool(); ++i) {
-            tools = std::make_shared<adt::AudioTools>();            
+            tools = std::make_shared<adt::AudioTools>();
 
             auto path = Paths::getInstance().getTempPath(std::to_string(i));
 
@@ -81,6 +82,7 @@ namespace adt {
         }
 
         Flags::getInstance().SetCompress(false);
+        Flags::getInstance().SetLoadRightLine(false);
     }
 
     void AudioRunner::ChangeThreads(int n) {

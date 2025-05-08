@@ -1,6 +1,5 @@
 #include "adt-window.hpp"
 
-#include "adt-service.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -9,7 +8,7 @@
 #include <string>
 
 namespace adt {
-    Window::Window(int w, int h, std::string name, Service* service) : width(w), height(h), window_name(name), service(service) {
+    Window::Window(int w, int h, std::string name) : width(w), height(h), window_name(name) {
         initWindow();
         initUInterface();
     }
@@ -60,6 +59,11 @@ namespace adt {
 
             ImGui::End();
         }
+
+        // {
+        //     bool p = true;
+        //     ImGui::ShowDemoWindow(&p);
+        // }
 
         renderUInterface();
     }

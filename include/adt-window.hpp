@@ -1,7 +1,6 @@
 #pragma once
 
 #include "adt-interface.hpp"
-#include "adt-service.hpp"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -12,7 +11,7 @@
 namespace adt {
     class Window {
         public:
-        Window(int w, int h, std::string name, Service* service);
+        Window(int w, int h, std::string name);
         ~Window();
 
         bool ShouldClose() { return glfwWindowShouldClose(window); }
@@ -21,7 +20,6 @@ namespace adt {
 
         private:
         GLFWwindow* window;
-        Service* service;
 
         const int width;
         const int height;
@@ -35,6 +33,6 @@ namespace adt {
         void loopUInterface();
         void renderUInterface();
 
-        Interface interface{service};
+        Interface interface{};
     };
 }
