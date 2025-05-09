@@ -5,12 +5,18 @@
 #include <unordered_map>
 
 namespace adt {
-    class Rline : ILine{
+    struct RLineState {
+        std::string path;
+        bool is_ready = false;
+        bool was_checked = false;
+    };
+    
+    class Rline : ILine {
         public:
         Rline();
         ~Rline() override = default;
 
-        void lineUI(const std::string& name) override;
+        void lineUI(const std::string& name, bool status, float progress);
 
         private:
         std::unordered_map<std::string, std::unique_ptr<Icon>> icons;

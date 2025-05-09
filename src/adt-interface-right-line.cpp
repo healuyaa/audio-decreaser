@@ -9,11 +9,22 @@ namespace adt {
         loadIcon();
     }
 
-    void Rline::lineUI(const std::string& name) {
+    void Rline::lineUI(const std::string& name, bool status, float progress) {
         const ImVec2 icon_file_size(64.0f, 64.0f);
         const ImVec2 icon_button_size(24.0f, 24.0f);
         const float spacing = ImGui::GetStyle().ItemSpacing.x;
-        
+            
+        if(!status) {
+            ImGui::BeginGroup();
+
+            ImGui::TextWrapped("Compressing: %s", name.c_str());
+            ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+
+            ImGui::EndGroup();
+
+            return;
+        }
+
         ImGui::BeginGroup();
         {
             ImGui::Image((void*)(intptr_t)getIcon("audio-ai")->GetID(), icon_file_size);

@@ -20,8 +20,7 @@ namespace adt {
         std::vector<std::unique_ptr<Rline>> Rlines;
         std::unique_ptr<Tline> tline;
 
-        int is_selected_left = -1;
-        int is_selected_right = -1;
+        std::vector<RLineState> RlineStates;
         
         void TopBar();
         void TopSection(float width = 0.0f, float height = 0.0f);

@@ -10,11 +10,11 @@
 #include <windows.h>
 
 namespace adt {
-    const std::vector<std::filesystem::path> AudioTools::get_cut_result() {
+    const std::vector<std::filesystem::path> AudioTools::GetCutResult() {
         return fragment_paths;
     }
 
-    void AudioTools::split_audio(const std::filesystem::path &path_to_cut) {
+    void AudioTools::splitAudio(const std::filesystem::path &path_to_cut) {
         std::string split_path = utf16to1251(path_to_cut);
 
         SF_INFO sfinfo;        
@@ -86,7 +86,7 @@ namespace adt {
         sf_close(in_file);
     }
 
-    void AudioTools::concat_audio(const std::vector<std::filesystem::path>& paths, const std::filesystem::path& compressed_audio) {
+    void AudioTools::concatAudio(const std::vector<std::filesystem::path>& paths, const std::filesystem::path& compressed_audio) {
         SF_INFO sfinfo_in;
         SF_INFO sfinfo_out = {};
         SNDFILE* outfile = nullptr;
@@ -131,7 +131,22 @@ namespace adt {
         sf_close(outfile);
     
         std::cout << "Concatenation complete: " << compressed_audio << std::endl;
-    }    
+    }
+
+    std::filesystem::path AudioTools::GetUniquePath(const std::filesystem::path& base_path) {
+        std::filesystem::path unique_path = base_path;
+        int counter = 1;
+
+        while (std::filesystem::exists(unique_path)) {
+            unique_path = base_path;
+            unique_path.replace_filename(
+                base_path.stem().string() + '(' + std::to_string(counter) + ')' + base_path.extension().string()
+            );
+            ++counter;
+        }
+        std::cout << "Exist path: " << unique_path.string();
+        return unique_path;
+    }
 
     std::string AudioTools::utf16to1251(const std::filesystem::path& path) {
         std::wstring wstr = path.wstring();

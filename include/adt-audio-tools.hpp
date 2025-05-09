@@ -9,12 +9,16 @@ namespace adt {
         AudioTools() = default;
         ~AudioTools() = default;
 
-        const std::vector<std::filesystem::path> get_cut_result();
-        void split_audio(const std::filesystem::path &path_to_cut);
-        void concat_audio(const std::vector<std::filesystem::path>& paths, const std::filesystem::path& compressed_audio);
+        const std::vector<std::filesystem::path> GetCutResult();
+
+        void splitAudio(const std::filesystem::path& path_to_cut);
+        void concatAudio(const std::vector<std::filesystem::path>& paths, const std::filesystem::path& compressed_audio);
+
+        std::filesystem::path GetUniquePath(const std::filesystem::path& base_path);
+
         std::string utf16to1251(const std::filesystem::path& path);
 
         private:
-        std::vector<std::filesystem::path> fragment_paths;        
+        std::vector<std::filesystem::path> fragment_paths;
     };    
 }

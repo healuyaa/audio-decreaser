@@ -108,6 +108,12 @@ namespace adt {
         if(Rlines.size() < Llines.size() && Flags::getInstance().GetLoadRightLine()) {
             auto rline = std::make_unique<Rline>();
             Rlines.push_back(std::move(rline));
+
+            std::filesystem::path filename(Paths::getInstance().getTempPath(std::to_string(Rlines.size() - 1)));
+            std::string r_path = std::string(Paths::getInstance().GetPath("results")) + "/compressed_" + filename.filename().string();
+            r_path = std::filesystem::absolute(r_path).string();
+
+            RlineStates.push_back({.path = r_path, .is_ready = false, .was_checked = false});
         }
 
         for(int i = 0; i < Rlines.size(); ++i) {
@@ -130,11 +136,16 @@ namespace adt {
                     draw->AddRectFilled(min, max, ImColor(hover_bg));
                 }
 
-                std::filesystem::path filename(Paths::getInstance().getTempPath(std::to_string(i)));
-                std::string r_path = std::string(Paths::getInstance().GetPath("results")) + "/compressed_" + filename.filename().string();
-                r_path = std::filesystem::absolute(r_path).string();
+                if(!RlineStates[i].was_checked) {
+                    if(std::filesystem::exists(RlineStates[i].path)) {
+                        RlineStates[i].was_checked = true;
+                        RlineStates[i].is_ready = true;
+                    }
+                }
 
-                Rlines[i]->lineUI(r_path);
+                bool status = RlineStates[i].is_ready && !Flags::getInstance().GetCompress();
+
+                Rlines[i]->lineUI(RlineStates[i].path, status, 0.0f);
             }
 
             ImGui::PopStyleColor();

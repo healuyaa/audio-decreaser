@@ -38,8 +38,8 @@ namespace adt {
                 return;
             }
 
-            tools->split_audio(path_o);
-            auto paths_fragments = tools->get_cut_result();
+            tools->splitAudio(path_o);
+            auto paths_fragments = tools->GetCutResult();
 
             for(const auto &p: paths_fragments) {
                 std::cout << p.string() << std::endl;
@@ -76,7 +76,9 @@ namespace adt {
             }
 
             std::filesystem::path compressed_audio = std::string(Paths::getInstance().GetPath("results")) + "/compressed_" + path_o.filename().string();
-            tools->concat_audio(compressed_paths, compressed_audio);
+            auto safe_path = tools->GetUniquePath(compressed_audio);
+            
+            tools->concatAudio(compressed_paths, safe_path);
 
             FileTools::getInstance().deleteFragments(spaths_fragments);
         }

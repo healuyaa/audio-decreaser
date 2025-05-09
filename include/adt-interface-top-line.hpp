@@ -13,7 +13,7 @@ namespace adt {
         Tline();
         ~Tline() override = default;
 
-        void lineUI(const std::string& name) override;
+        void lineUI(const std::string& name);
         bool IsShouldRun();
 
         private:
