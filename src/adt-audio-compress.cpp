@@ -7,13 +7,15 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <stringapiset.h>
 
 
 namespace adt {
-    Compress::Compress(const std::vector<std::string>& paths, int count_threads) 
-        : paths(paths), count_threads(count_threads) {
+    Compress::Compress(const std::vector<std::string>& paths, int count_threads, std::atomic<float>* progress) 
+        : paths(paths), count_threads(count_threads), progress(progress) {
+            size_paths = paths.size();
     }
 
     Compress::~Compress() {
@@ -51,16 +53,21 @@ namespace adt {
             {
                 std::lock_guard<std::mutex> lock(cout_mutex);
                 std::cout << "[thread " << id << "] work: " << command << std::endl;
-                // fix logic                
+                // fix logic
             }
 
             system(command.c_str());
+
+            int done = ++current_progress;
+            if(progress) {
+                progress->store(static_cast<float>(done) / size_paths);
+            }
 
             // std::this_thread::sleep_for(std::chrono::milliseconds(1)); // optional
         }
     }
 
-    std::string Compress::generate_command(const std::filesystem::path& input) {        
+    std::string Compress::generate_command(const std::filesystem::path& input) {
         std::string filename = "compressed_" + input.filename().string();
         std::filesystem::path output_path = std::filesystem::path(Paths::getInstance().GetPath("fragments_dir")) /
                                             std::filesystem::path(filename);

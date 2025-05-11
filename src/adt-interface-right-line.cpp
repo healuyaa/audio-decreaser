@@ -3,27 +3,17 @@
 #include "adt-paths.hpp"
 #include "imgui.h"
 #include <iostream>
+#include <atomic>
 
 namespace adt {
     Rline::Rline() {
         loadIcon();
     }
 
-    void Rline::lineUI(const std::string& name, bool status, float progress) {
+    void Rline::lineUI(const std::string& name, bool status, std::atomic<float>* progress) {
         const ImVec2 icon_file_size(64.0f, 64.0f);
         const ImVec2 icon_button_size(24.0f, 24.0f);
         const float spacing = ImGui::GetStyle().ItemSpacing.x;
-            
-        if(!status) {
-            ImGui::BeginGroup();
-
-            ImGui::TextWrapped("Compressing: %s", name.c_str());
-            ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
-
-            ImGui::EndGroup();
-
-            return;
-        }
 
         ImGui::BeginGroup();
         {
@@ -32,17 +22,34 @@ namespace adt {
         ImGui::EndGroup();
 
         ImGui::SameLine();
+            
+        if(!status) {
+            ImGui::BeginGroup();
+
+            ImGui::TextWrapped("Compressing: %s", name.c_str());
+
+            float value = 0.0f;
+            if(progress) {
+                value = progress->load();
+            }
+
+            ImGui::ProgressBar(value, ImVec2(0.0f, 0.0f));
+
+            ImGui::EndGroup();
+
+            return;
+        }        
 
         ImGui::BeginGroup();
         {
             ImGui::TextWrapped("%s", name.c_str());
     
-            // uintmax_t size = std::filesystem::file_size(name.c_str());
-            // double size_in_mb = static_cast<double>(size) / (1024 * 1024);
+            uintmax_t size = std::filesystem::file_size(name.c_str());
+            double size_in_mb = static_cast<double>(size) / (1024 * 1024);
 
-            // std::ostringstream oss;
-            // oss << std::fixed << std::setprecision(1) << size_in_mb << " MB";
-            // ImGui::Text("%s", oss.str().c_str());
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(1) << size_in_mb << " MB";
+            ImGui::Text("%s", oss.str().c_str());
         }
         ImGui::EndGroup();
         

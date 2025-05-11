@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <vector>
+#include <atomic>
 
 namespace adt {
     class Interface {
@@ -21,6 +22,7 @@ namespace adt {
         std::unique_ptr<Tline> tline;
 
         std::vector<RLineState> RlineStates;
+        std::atomic<float> progress = 0.0f;
         
         void TopBar();
         void TopSection(float width = 0.0f, float height = 0.0f);

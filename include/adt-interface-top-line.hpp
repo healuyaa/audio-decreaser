@@ -13,7 +13,7 @@ namespace adt {
         Tline();
         ~Tline() override = default;
 
-        void lineUI(const std::string& name);
+        void lineUI(const std::string& name, std::atomic<float>* progress);
         bool IsShouldRun();
 
         private:

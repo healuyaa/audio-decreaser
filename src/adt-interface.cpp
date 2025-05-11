@@ -2,6 +2,7 @@
 
 #include "adt-file-tools.hpp"
 #include "adt-flags.hpp"
+#include "adt-interface-right-line.hpp"
 #include "adt-interface-top-line.hpp"
 #include "adt-paths.hpp"
 #include "imgui.h"
@@ -15,7 +16,7 @@
 
 namespace adt {
     Interface::Interface()  {
-        FileTools::getInstance().initDirs();
+        FileTools::getInstance().initDirs();        
     }
 
     void Interface::UInterface() {
@@ -41,7 +42,7 @@ namespace adt {
             this->tline = std::move(tline);
         }
         
-        tline->lineUI("name top");
+        tline->lineUI("name top", &progress);
 
         ImGui::EndChild();
     }
@@ -116,6 +117,14 @@ namespace adt {
             RlineStates.push_back({.path = r_path, .is_ready = false, .was_checked = false});
         }
 
+        int active_index = -1;
+        for(size_t i = 0; i < RlineStates.size(); ++i) {
+            if(!RlineStates[i].is_ready) {
+                active_index = i;
+                break;
+            }            
+        }
+
         for(int i = 0; i < Rlines.size(); ++i) {
             std::string child_id = "##child_id_r" + std::to_string(i);
 
@@ -143,9 +152,12 @@ namespace adt {
                     }
                 }
 
-                bool status = RlineStates[i].is_ready && !Flags::getInstance().GetCompress();
-
-                Rlines[i]->lineUI(RlineStates[i].path, status, 0.0f);
+                bool status = RlineStates[i].is_ready;
+                if(i == active_index && Flags::getInstance().GetCompress()) {
+                    Rlines[i]->lineUI(RlineStates[i].path, status, &progress);
+                } else {
+                    Rlines[i]->lineUI(RlineStates[i].path, status, nullptr);
+                }
             }
 
             ImGui::PopStyleColor();

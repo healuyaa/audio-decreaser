@@ -20,7 +20,7 @@ namespace adt {
         initIsHovered();        
     }
 
-    void Tline::lineUI(const std::string& name) {
+    void Tline::lineUI(const std::string& name, std::atomic<float>* progress) {
         ImVec2 size{160.0f, 50.0f}; // size novigate rectangles
 
         IsHoveredTopitem(is_hovered["load_file"]);
@@ -105,9 +105,9 @@ namespace adt {
             ImGui::Text("compress");
 
             if (is_hovered["compress"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetCompress()) {                                
-                std::thread([]() {
+                std::thread([this, progress]() {
                     AudioRunner ar;
-                    ar.run();
+                    ar.run(progress);
                 }).detach();
 
                 std::cout << "here compress" << std::endl;

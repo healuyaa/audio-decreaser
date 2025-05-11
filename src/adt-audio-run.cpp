@@ -13,7 +13,7 @@
 #include <vector>
 
 namespace adt {
-    void AudioRunner::run() {
+    void AudioRunner::run(std::atomic<float>* progress) {
         Flags::getInstance().SetCompress(true);
         Flags::getInstance().SetLoadRightLine(true);
 
@@ -56,7 +56,7 @@ namespace adt {
             }
 
             {
-                Compress compressor(spaths_fragments, number_threads);
+                Compress compressor(spaths_fragments, number_threads, progress);
                 compressor.run();
             }
 

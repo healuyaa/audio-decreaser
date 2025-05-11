@@ -1,6 +1,7 @@
 #pragma once
 
 #include "adt-audio-tools.hpp"
+#include <atomic>
 #include <filesystem>
 #include <mutex>
 #include <optional>
@@ -11,14 +12,17 @@
 namespace adt {
     class Compress {
         public:
-        Compress(const std::vector<std::string>& paths, int count_threads = 10);
+        Compress(const std::vector<std::string>& paths, int count_threads = 10, std::atomic<float>* progress = nullptr);
         ~Compress();
 
         void run();
 
         private:
         std::vector<std::string> paths;
+        int size_paths;
         int count_threads;
+        std::atomic<int> current_progress = 0;
+        std::atomic<float>* progress;
 
         std::vector<std::thread> threads;
         std::mutex data_mutex;

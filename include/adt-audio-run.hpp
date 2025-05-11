@@ -10,7 +10,7 @@ namespace adt {
         AudioRunner() = default;
         ~AudioRunner() = default;
 
-        void run();
+        void run(std::atomic<float>* progress);
         void ChangeThreads(int n = 10);
 
         private:
