@@ -1,7 +1,14 @@
 #pragma once
 
 namespace adt {
-    class Settings {
+    class Settigns {
+        public:
+        Settigns() = default;
+        ~Settigns() = default;
 
+        void runUI();
+
+        private:
+        int count_threads;
     };
 }

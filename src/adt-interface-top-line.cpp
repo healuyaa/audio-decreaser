@@ -33,7 +33,7 @@ namespace adt {
 
             ImGui::SameLine();
 
-            ImGui::Text("load_file");
+            ImGui::Text("Add File");
 
             if (is_hovered["load_file"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFileDialogOpen()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
@@ -56,7 +56,7 @@ namespace adt {
 
             ImGui::SameLine();
 
-            ImGui::Text("load_group_files");
+            ImGui::Text("Add Files");
 
             if (is_hovered["load_group_files"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFolderDialog()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
@@ -79,7 +79,7 @@ namespace adt {
 
             ImGui::SameLine();
 
-            ImGui::Text("output_folder");
+            ImGui::Text("Output");
 
             if (is_hovered["output_folder"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetOpenOutput()) {                
                 dialog = std::make_shared<adt::ADTFileDialog>();
@@ -102,7 +102,7 @@ namespace adt {
 
             ImGui::SameLine();
 
-            ImGui::Text("compress");
+            ImGui::Text("Compress");
 
             if (is_hovered["compress"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetCompress()) {                                
                 std::thread([this, progress]() {
@@ -128,7 +128,7 @@ namespace adt {
 
             ImGui::SameLine();
 
-            ImGui::Text("delete");
+            ImGui::Text("Delete");
 
             if (is_hovered["delete"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                 std::cout << "here delete" << std::endl;
@@ -149,7 +149,7 @@ namespace adt {
 
             ImGui::SameLine();
 
-            ImGui::Text("settings");
+            ImGui::Text("Settings");
 
             if (is_hovered["settings"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                 std::cout << "here settings" << std::endl;                  

@@ -90,6 +90,14 @@ namespace adt {
         std::lock_guard<std::mutex> lock(mutex_);
         return faudiocompress.is_hq_model;
     }
+
+    void Flags::SetCountThreads(int count) {
+        faudiocompress.count_threads = count;
+    }
+
+    int Flags::GetCountThreads() {
+        return faudiocompress.count_threads;
+    }
     //methods for set/get bool flags from FTopline
 
     //methods for set/get bool flags from FTopline

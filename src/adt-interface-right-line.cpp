@@ -84,6 +84,9 @@ namespace adt {
             );
 
             if (ImGui::IsItemClicked()) {
+                dialog = std::make_shared<adt::ADTFileDialog>();
+                dialog->OpenOutputDirAndSelect(name);
+                
                 std::cout << "Clicked open_file" << std::endl;
             }
 

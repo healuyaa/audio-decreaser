@@ -6,6 +6,7 @@
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <shlobj.h>
 #include <shobjidl.h>
 #include <thread>
 #include <vector>
@@ -186,6 +187,35 @@ namespace adt {
     }
 
     const void ADTFileDialog::OpenOutputDirAndSelect(const std::string_view& path) {
-        
+        std::filesystem::path f_path(path);
+        std::wstring w_path = std::filesystem::absolute(f_path).wstring();
+
+        if (!std::filesystem::exists(f_path)) {
+            std::wcout << L"[ADT] Path does not exist: " << w_path << std::endl;
+            Flags::getInstance().SetOpenOutput(false);
+            return;
+        }
+
+        std::thread([this, w_path]() {
+            PIDLIST_ABSOLUTE pidl = nullptr;
+            HRESULT hr = SHParseDisplayName(w_path.c_str(), nullptr, &pidl, 0, nullptr);
+
+            if (SUCCEEDED(hr)) {
+                LPCITEMIDLIST files[1] = { ILFindLastID(pidl) };
+                PIDLIST_ABSOLUTE folder = ILClone(pidl);
+                ILRemoveLastID(folder);
+
+                hr = SHOpenFolderAndSelectItems(folder, 1, files, 0);
+                
+                ILFree(folder);
+                ILFree(pidl);
+            }
+
+            if (FAILED(hr)) {
+                std::wcout << L"[ADT] Failed to open and select file: " << hr << std::endl;
+            }
+
+            
+        }).detach();
     }
 }

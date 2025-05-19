@@ -38,6 +38,9 @@ namespace adt {
         //methods for set/get bool flags from FAudioCompress
         void SetHqModel(bool);
         bool GetHqModel();
+
+        void SetCountThreads(int);
+        int GetCountThreads();
         //methods for set/get bool flags from FAudioCompress
 
         //methods for set/get bool flags from FAudioRunner
@@ -46,7 +49,6 @@ namespace adt {
         //methods for set/get bool flags from FAudioRunner
 
         private:
-
         Flags(const Flags&) = delete;
         Flags& operator=(const Flags&) = delete; 
         
@@ -69,6 +71,7 @@ namespace adt {
         // struct of all bool flags which uses in adt-audio-compress.hpp && adt-audio-compress.cpp
         struct FAudioCompress {
             bool is_hq_model = false;
+            int count_threads = 10;
         };
 
         // struct of all bool flags which uses in adt-audio-run.hpp && adt-audio-run.cpp

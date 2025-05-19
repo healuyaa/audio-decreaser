@@ -48,7 +48,7 @@ namespace adt {
     }
 
     void Interface::MidSection(float width, float height) {
-        ImGui::BeginChild("MidSection", ImVec2(0, height), false);
+        ImGui::BeginChild("MidSection", ImVec2(0, height));
 
         float leftPanelWidth = width * 0.3f;
         float rightPanelWidth = width - leftPanelWidth - ImGui::GetStyle().ItemSpacing.x;
