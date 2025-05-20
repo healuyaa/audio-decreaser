@@ -29,6 +29,8 @@ namespace adt {
         void MidSection(float width = 0.0f, float height = 0.0f);
 
         void LeftSection(float width = 0.0f, float height = 0.0f);
-        void RightSection(float width = 0.0f, float height = 0.0f);        
+        void RightSection(float width = 0.0f, float height = 0.0f);
+
+        void GlobalDelete();
     };    
 }

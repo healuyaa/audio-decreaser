@@ -80,5 +80,6 @@ namespace adt {
     void Paths::clearTempPath() {
         std::lock_guard<std::mutex> lock(mutex_);
         temp_pool.clear();
+        id = 0;
     }
 }

@@ -4,6 +4,7 @@
 #include "adt-file-dialog.hpp"
 #include "adt-flags.hpp"
 #include "adt-icon.hpp"
+#include "adt-interface-settings.hpp"
 #include "adt-paths.hpp"
 #include "imgui.h"
 
@@ -17,7 +18,8 @@
 namespace adt {
     Tline::Tline() {
         loadIcon();
-        initIsHovered();        
+        initIsHovered();
+        settings = std::make_shared<adt::Settigns>();
     }
 
     void Tline::lineUI(const std::string& name, std::atomic<float>* progress) {
@@ -35,7 +37,8 @@ namespace adt {
 
             ImGui::Text("Add File");
 
-            if (is_hovered["load_file"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFileDialogOpen()) {
+            if (is_hovered["load_file"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
+                && !Flags::getInstance().GetFileDialogOpen() && !Flags::getInstance().GetCompress()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
                 dialog->OpenFileDialog();
                 std::cout << "here load_file" << std::endl;
@@ -58,7 +61,8 @@ namespace adt {
 
             ImGui::Text("Add Files");
 
-            if (is_hovered["load_group_files"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetFolderDialog()) {
+            if (is_hovered["load_group_files"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
+                && !Flags::getInstance().GetFolderDialog() && !Flags::getInstance().GetCompress()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
                 dialog->OpenFolderDialog();
                 std::cout << "here load_group_files" << std::endl;
@@ -130,7 +134,10 @@ namespace adt {
 
             ImGui::Text("Delete");
 
-            if (is_hovered["delete"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+            if (is_hovered["delete"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
+                && !Flags::getInstance().GetGlobalDelete() && !Flags::getInstance().GetCompress()) {
+
+                Flags::getInstance().SetGlobalDelete(true);
                 std::cout << "here delete" << std::endl;
             }
         }
@@ -151,8 +158,17 @@ namespace adt {
 
             ImGui::Text("Settings");
 
-            if (is_hovered["settings"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                std::cout << "here settings" << std::endl;                  
+            if (is_hovered["settings"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
+                && !Flags::getInstance().GetSettings() && !Flags::getInstance().GetCompress()) {
+                Flags::getInstance().SetSettings(true);
+
+                ImGui::OpenPopup("Settings");
+
+                std::cout << "here settings" << std::endl;
+            }
+
+            if(Flags::getInstance().GetSettings()) {                
+                settings->runUI();
             }
         }
         ImGui::PopStyleColor();

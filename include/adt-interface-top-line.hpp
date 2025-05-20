@@ -2,6 +2,7 @@
 
 #include "adt-file-dialog.hpp"
 #include "adt-interface-Iline.hpp"
+#include "adt-interface-settings.hpp"
 
 #include <memory>
 #include <string>
@@ -27,5 +28,6 @@ namespace adt {
         void initIsHovered();
 
         std::shared_ptr<adt::ADTFileDialog> dialog;
+        std::shared_ptr<adt::Settigns> settings;
     };
 }

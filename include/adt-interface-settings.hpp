@@ -1,14 +1,16 @@
 #pragma once
-
 namespace adt {
     class Settigns {
         public:
-        Settigns() = default;
+        Settigns();
         ~Settigns() = default;
 
         void runUI();
 
-        private:
         int count_threads;
+        int hq_model;
+
+        private:
+        void apply();
     };
 }

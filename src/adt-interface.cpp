@@ -30,6 +30,10 @@ namespace adt {
         TopSection(window_size.x, top_section_height);
         MidSection(window_size.x, mid_section_height);
 
+        if(Flags::getInstance().GetGlobalDelete()) {
+            GlobalDelete();
+        }
+
         ImGui::End();
     }
 
@@ -166,5 +170,13 @@ namespace adt {
 
         ImGui::EndGroup();
         ImGui::EndChild();
+    }
+
+    void Interface::GlobalDelete() {
+        Flags::getInstance().SetGlobalDelete(false);
+
+        Llines.clear();
+        Rlines.clear();
+        Paths::getInstance().clearTempPath();
     }
 }

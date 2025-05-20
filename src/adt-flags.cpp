@@ -69,6 +69,15 @@ namespace adt {
         return ftopline.is_compress;
     }
 
+    void Flags::SetGlobalDelete(bool b) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        ftopline.is_global_delete = b;
+    }
+
+    bool Flags::GetGlobalDelete() {
+        return ftopline.is_global_delete;
+    }
+
     void Flags::SetSettings(bool b) {
         std::lock_guard<std::mutex> lock(mutex_);
         ftopline.is_setting = b;

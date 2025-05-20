@@ -21,7 +21,8 @@ namespace adt {
             return;
 
         if(!Flags::getInstance().GetIsCountChangeThreads()) {
-            ChangeThreads(Flags::getInstance().GetCountThreads()); // default 10 threads
+            ChangeThreads(Flags::getInstance().GetCountThreads()); // default half of threads processor threads
+            Flags::getInstance().SetIsCountChangeThreads(false);
         }
 
         for(std::size_t i = 0; i < Paths::getInstance().GetSizeTempPool(); ++i) {

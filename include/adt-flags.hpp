@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mutex>
+#include <thread>
 
 namespace adt {
     class Flags {
@@ -30,6 +31,9 @@ namespace adt {
 
         void SetCompress(bool);
         bool GetCompress();
+
+        void SetGlobalDelete(bool);
+        bool GetGlobalDelete();
 
         void SetSettings(bool);
         bool GetSettings();
@@ -65,13 +69,14 @@ namespace adt {
             bool is_open_folder_dialog = false;
             bool is_open_output = false;
             bool is_compress = false;
+            bool is_global_delete = false;
             bool is_setting = false;
         };
         
         // struct of all bool flags which uses in adt-audio-compress.hpp && adt-audio-compress.cpp
         struct FAudioCompress {
             bool is_hq_model = false;
-            int count_threads = 10;
+            int count_threads = std::thread::hardware_concurrency() / 2;
         };
 
         // struct of all bool flags which uses in adt-audio-run.hpp && adt-audio-run.cpp
