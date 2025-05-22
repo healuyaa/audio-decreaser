@@ -5,10 +5,11 @@
 namespace adt {
     class ConfirmWindow {
         public:
-        ConfirmWindow();
-        ~ConfirmWindow();
+        ConfirmWindow() = default;
+        ~ConfirmWindow() = default;
 
-        void runUI(const std::string& name);
+        void runConfirm();
+        void runConfirm(const std::string& name);
 
         private:
     };

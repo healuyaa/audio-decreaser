@@ -32,5 +32,7 @@ namespace adt {
         void RightSection(float width = 0.0f, float height = 0.0f);
 
         void GlobalDelete();
+        void ReindexLlines();
+        void ReindexRlines();
     };    
 }

@@ -4,13 +4,13 @@
 #include "adt-file-dialog.hpp"
 #include "adt-flags.hpp"
 #include "adt-icon.hpp"
+#include "adt-interface-confirm.hpp"
 #include "adt-interface-settings.hpp"
 #include "adt-paths.hpp"
 #include "imgui.h"
 
 #include <cstdint>
 #include <cstdlib>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <thread>
@@ -41,7 +41,6 @@ namespace adt {
                 && !Flags::getInstance().GetFileDialogOpen() && !Flags::getInstance().GetCompress()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
                 dialog->OpenFileDialog();
-                std::cout << "here load_file" << std::endl;
             }
         }
         ImGui::PopStyleColor();
@@ -65,7 +64,6 @@ namespace adt {
                 && !Flags::getInstance().GetFolderDialog() && !Flags::getInstance().GetCompress()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
                 dialog->OpenFolderDialog();
-                std::cout << "here load_group_files" << std::endl;
             }
         }
         ImGui::PopStyleColor();
@@ -88,7 +86,6 @@ namespace adt {
             if (is_hovered["output_folder"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !Flags::getInstance().GetOpenOutput()) {                
                 dialog = std::make_shared<adt::ADTFileDialog>();
                 dialog->OpenOutputDir(Paths::getInstance().GetPath("results"));
-                std::cout << "here output_folder" << std::endl;
             }
         }
         ImGui::PopStyleColor();
@@ -114,7 +111,7 @@ namespace adt {
                     ar.run(progress);
                 }).detach();
 
-                std::cout << "here compress" << std::endl;
+                Flags::getInstance().SetLoadRightLine(true);
             }
         }
         ImGui::PopStyleColor();
@@ -135,10 +132,15 @@ namespace adt {
             ImGui::Text("Delete");
 
             if (is_hovered["delete"] && ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
-                && !Flags::getInstance().GetGlobalDelete() && !Flags::getInstance().GetCompress()) {
+                && !Flags::getInstance().GetGlobalDelete() && !Flags::getInstance().GetCompress()) {  
+                Flags::getInstance().SetIsConfirm(true);
+        
+                ImGui::OpenPopup("##confirm window");
+            }
 
-                Flags::getInstance().SetGlobalDelete(true);
-                std::cout << "here delete" << std::endl;
+            if(Flags::getInstance().GetIsConfirm()) {
+                confirm = std::make_shared<ConfirmWindow>();
+                confirm->runConfirm();
             }
         }
         ImGui::PopStyleColor();
@@ -163,8 +165,6 @@ namespace adt {
                 Flags::getInstance().SetSettings(true);
 
                 ImGui::OpenPopup("Settings");
-
-                std::cout << "here settings" << std::endl;
             }
 
             if(Flags::getInstance().GetSettings()) {                

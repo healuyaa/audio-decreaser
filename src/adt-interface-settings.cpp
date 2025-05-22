@@ -2,7 +2,6 @@
 #include "adt-flags.hpp"
 
 #include "imgui.h"
-#include <iostream>
 
 namespace adt {
     Settigns::Settigns() {
@@ -32,8 +31,6 @@ namespace adt {
 
                 apply();
 
-                std::cout << count_threads << ' ' << hq_model << std::endl;
-
                 ImGui::CloseCurrentPopup();
             }
 
@@ -45,8 +42,6 @@ namespace adt {
                 count_threads = std::thread::hardware_concurrency() / 2;
                 hq_model = 0;
 
-                std::cout << count_threads << ' ' << hq_model << std::endl;
-
                 ImGui::CloseCurrentPopup();
             }
 
@@ -55,7 +50,6 @@ namespace adt {
 
         if(!settings_status) {
             Flags::getInstance().SetSettings(false);
-            std::cout << count_threads << ' ' << hq_model << std::endl;
         }        
     }
 

@@ -1,5 +1,6 @@
 #include "adt-window.hpp"
 
+#include "adt-icon.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -11,6 +12,7 @@ namespace adt {
     Window::Window(int w, int h, std::string name) : width(w), height(h), window_name(name) {
         initWindow();
         initUInterface();
+        initFont();
     }
 
     Window::~Window() {
@@ -50,21 +52,7 @@ namespace adt {
         loopUInterface();
 
         interface.UInterface();
-
-        {
-            ImGui::Begin("stats");
-
-            io = ImGui::GetIO();
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-
-            ImGui::End();
-        }
-
-        // {
-        //     bool p = true;
-        //     ImGui::ShowDemoWindow(&p);
-        // }
-
+        
         renderUInterface();
     }
 
@@ -76,6 +64,18 @@ namespace adt {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         window = glfwCreateWindow(width, height, window_name.c_str(), nullptr, nullptr);
+
+        int w, h, ch;
+
+        unsigned char* icon = stbi_load(window_icon, &w, &h, &ch, 4);
+        if (icon) {
+            GLFWimage img;
+            img.width = w;
+            img.height = h;
+            img.pixels = icon;
+            glfwSetWindowIcon(window, 1, &img);
+            stbi_image_free(icon);
+        }
 
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
@@ -95,5 +95,13 @@ namespace adt {
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
+    }
+
+    void Window::initFont() {
+        io = ImGui::GetIO();
+
+        io.Fonts->AddFontFromFileTTF("../assets/fonts/Lorenzo Sans Regular.ttf", 18.0f);
+
+        io.FontDefault = io.Fonts->Fonts.back();
     }
 }

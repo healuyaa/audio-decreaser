@@ -39,6 +39,16 @@ namespace adt {
         bool GetSettings();
         //methods for set/get bool flags from FTopline
 
+        //methods for set/get bool flags from FLLine
+        void SetLIsDelete(bool);
+        bool GetLIsDelete();
+        //methods for set/get bool flags from FLLine
+
+        //methods for set/get bool flags from FRLine
+        void SetRIsDelete(bool);
+        bool GetRIsDelete();
+        //methods for set/get bool flags from FRLine
+
         //methods for set/get bool flags from FAudioCompress
         void SetHqModel(bool);
         bool GetHqModel();
@@ -51,6 +61,11 @@ namespace adt {
         void SetIsCountChangeThreads(bool);
         bool GetIsCountChangeThreads();
         //methods for set/get bool flags from FAudioRunner
+
+        //methods for set/get bool flags from FInterfaceComfirm
+        void SetIsConfirm(bool);
+        bool GetIsConfirm();
+        //methods for set/get bool flags from FInterfaceComfirm
 
         private:
         Flags(const Flags&) = delete;
@@ -72,8 +87,18 @@ namespace adt {
             bool is_global_delete = false;
             bool is_setting = false;
         };
+
+        // struct of all bool flags which uses in adt-interface-left-line.hpp && adt-adt-interface-left-line.cpp
+        struct FLLine {
+            bool is_delete;
+        };
+
+        // struct of all bool flags which uses in adt-interface-right-line.hpp && adt-adt-interface-right-line.cpp
+        struct FRLine {
+            bool is_delete;
+        };
         
-        // struct of all bool flags which uses in adt-audio-compress.hpp && adt-audio-compress.cpp
+        // struct of all bool/int flags which uses in adt-audio-compress.hpp && adt-audio-compress.cpp
         struct FAudioCompress {
             bool is_hq_model = false;
             int count_threads = std::thread::hardware_concurrency() / 2;
@@ -84,11 +109,19 @@ namespace adt {
             bool is_change_count_threads = false;
         };
 
+        // struct of all bool flags which uses in adt-audio-run.hpp && adt-audio-run.cpp
+        struct FInterfaceComfirm {
+            bool is_confirm = false;
+        };
+
 
         FInterface finterface;
         FTopLine ftopline;
         FAudioCompress faudiocompress;
         FAudioRunner faudiorunner;
+        FInterfaceComfirm finterfaceconfirm;
+        FLLine flline;
+        FRLine frline;
 
         mutable std::mutex mutex_;
     };    

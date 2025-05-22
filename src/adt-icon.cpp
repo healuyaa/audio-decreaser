@@ -1,7 +1,5 @@
 #include "adt-icon.hpp"
 
-#include <iostream>
-
 #include "stb_image.h"
 
 namespace adt {
@@ -24,7 +22,6 @@ namespace adt {
         glBindTexture(GL_TEXTURE_2D, 0);
 
         stbi_image_free(data);
-        std::cout << "Texture loaded with ID: " << IconID << std::endl;
     }
 
     Icon::~Icon() {

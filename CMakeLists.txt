@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(audio-decreaser VERSION 0.1.0 LANGUAGES C CXX)
+project(audio-decreaser VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -7,8 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(GLOB SOURCES
     ${CMAKE_SOURCE_DIR}/src/*.cpp
     ${CMAKE_SOURCE_DIR}/include/*.hpp
-    ${CMAKE_SOURCE_DIR}/lib/*.cpp
+    ${CMAKE_SOURCE_DIR}/lib/*.cpp    
 )
+
+if(WIN32)
+    set(Win_icon ${CMAKE_SOURCE_DIR}/resource/app_icon.rc)
+endif()
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
@@ -17,13 +21,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include/libsnd
 )
 
-# find_package(glfw3 REQUIRED)
-# find_package(PkgConfig REQUIRED)
-# pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g") // check this
-
-add_executable(audio-decreaser ${SOURCES})
+add_executable(audio-decreaser ${SOURCES} ${Win_icon})
 
 add_library(glad ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
 target_include_directories(glad PUBLIC ${CMAKE_SOURCE_DIR}/lib/glad)

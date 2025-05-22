@@ -3,6 +3,7 @@
 #include <mutex>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace adt {
     Paths::Paths() {
@@ -63,13 +64,14 @@ namespace adt {
         if(it != temp_pool.end()) {
             return it->second;
         } else {
-            throw std::runtime_error("Temp path not found" + id);
+            throw std::runtime_error("Temp path not found " + id);
         }
     }
 
     void Paths::removeTempPath(const std::string& id) {
-        std::lock_guard<std::mutex> lock(mutex_);
         temp_pool.erase(id);
+
+        reindexTempPool();
     }
 
     std::size_t Paths::GetSizeTempPool() {
@@ -78,8 +80,22 @@ namespace adt {
     }
 
     void Paths::clearTempPath() {
-        std::lock_guard<std::mutex> lock(mutex_);
         temp_pool.clear();
         id = 0;
+    }
+
+    void Paths::reindexTempPool() {
+        std::vector<std::string> values;
+        for(const auto& [key, val] : temp_pool) {
+            values.push_back(val);
+        }
+
+        temp_pool.clear();
+
+        id = values.size();
+
+        for(size_t i = 0; i < id; ++i) {
+            temp_pool[std::to_string(i)] = values[i];
+        }
     }
 }

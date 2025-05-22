@@ -2,7 +2,6 @@
 #include "adt-paths.hpp"
 
 #include <filesystem>
-#include <iostream>
 #include <stringapiset.h>
 
 namespace adt {
@@ -18,7 +17,6 @@ namespace adt {
     const void FileTools::copyFileAudio(const std::string& main_file) {
         const auto path = std::filesystem::path(main_file);
         if(!std::filesystem::exists(path)) {
-            std::cout << "does not exist" << std::endl;
             return;
         }
     
@@ -26,7 +24,6 @@ namespace adt {
             std::filesystem::copy(path, 
                                     std::filesystem::path(Paths::getInstance().GetPath("audio_dir")) / path.filename(), 
                                std::filesystem::copy_options::none);
-            std::cout << "copy complete: " << path << std::endl;
         } else {
             std::filesystem::path base_name = path.stem();
             std::filesystem::path extension_name = path.extension();
@@ -40,8 +37,6 @@ namespace adt {
             }
             
             std::filesystem::copy(path, new_file);
-    
-            std::cout << "copy complete: " << new_file << std::endl;
         }    
     }
 
@@ -49,10 +44,12 @@ namespace adt {
         for(const auto &p: paths) {
             const auto s = std::filesystem::path(p);
             if(!std::filesystem::exists(s))
-                return;        
+                return;
     
-            if(std::filesystem::remove(s))
-                std::cout << "delete fragment complete" << std::endl;
+            if(std::filesystem::remove(s)) {
+                continue;
+            }
+
         }
     }
 
@@ -61,8 +58,9 @@ namespace adt {
         if(!std::filesystem::exists(p))
             return;
     
-        if(std::filesystem::remove(p))
-            std::cout << "delete audio complete" << std::endl;
+        if(std::filesystem::remove(p)) {
+            return;
+        }
     }
 
     const std::string FileTools::utf16to1251(const std::filesystem::path& path) {
@@ -85,24 +83,18 @@ namespace adt {
 
         if(!std::filesystem::exists(temp_dir)) {
             std::filesystem::create_directories(temp_dir);
-            std::cout << "create temp_dir\n";
         }
 
         if(!std::filesystem::exists(fragments_dir)) {
             std::filesystem::create_directories(fragments_dir);
-            std::cout << "create fragments_dir\n";
         }
 
         if(!std::filesystem::exists(audio_dir)) {
             std::filesystem::create_directories(audio_dir);
-            std::cout << "create audio_dir\n";
         }
 
         if(!std::filesystem::exists(results_dir)) {
             std::filesystem::create_directories(results_dir);
-            std::cout << "create audio_dir\n";
         }
-
-        std::cout << "all already created\n";
     }
 }

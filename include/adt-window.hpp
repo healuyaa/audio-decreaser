@@ -24,6 +24,7 @@ namespace adt {
         const int width;
         const int height;
         const std::string window_name;
+        const char* window_icon = "../resource/window_icon32.png";
 
         const char* glsl_version = "#version 330";
         ImGuiIO io;
@@ -34,5 +35,7 @@ namespace adt {
         void renderUInterface();
 
         Interface interface{};
+
+        void initFont();
     };
 }

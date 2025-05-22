@@ -2,7 +2,6 @@
 
 #include "adt-paths.hpp"
 #include "imgui.h"
-#include <iostream>
 #include <atomic>
 
 namespace adt {
@@ -63,7 +62,7 @@ namespace adt {
 
             ImDrawList* draw = ImGui::GetWindowDrawList();
 
-            ImVec2 icon_pos_folder = ImVec2(icon_x, group_start_y);
+            ImVec2 icon_pos_folder = ImVec2(icon_x, group_start_y + 4.0f);
             ImGui::SetCursorScreenPos(icon_pos_folder);
 
             ImGui::InvisibleButton("##open_file", icon_button_size);
@@ -86,32 +85,6 @@ namespace adt {
             if (ImGui::IsItemClicked()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
                 dialog->OpenOutputDirAndSelect(name);
-                
-                std::cout << "Clicked open_file" << std::endl;
-            }
-
-            ImVec2 icon_pos_bin = ImVec2(icon_x, icon_pos_folder.y + icon_button_size.y + spacing);
-            ImGui::SetCursorScreenPos(icon_pos_bin);
-
-            ImGui::InvisibleButton("##recycle_bin", icon_button_size);
-
-            if (ImGui::IsItemHovered()) {
-                draw->AddRectFilled(
-                    icon_pos_bin,
-                    ImVec2(icon_pos_bin.x + icon_button_size.x, icon_pos_bin.y + icon_button_size.y),
-                    IM_COL32(255, 100, 100, 50), // red
-                    4.0f
-                );
-            }
-
-            draw->AddImage(
-                (void*)(intptr_t)getIcon("recycle_bin")->GetID(),
-                icon_pos_bin,
-                ImVec2(icon_pos_bin.x + icon_button_size.x, icon_pos_bin.y + icon_button_size.y)
-            );
-
-            if (ImGui::IsItemClicked()) {
-                std::cout << "Clicked recycle_bin" << std::endl;
             }
         }
         ImGui::EndGroup();

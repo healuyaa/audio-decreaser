@@ -1,11 +1,11 @@
 #include "adt-interface-left-line.hpp"
 
+#include "adt-flags.hpp"
 #include "adt-paths.hpp"
 #include "imgui.h"
 
 #include <cstdint>
 #include <filesystem>
-#include <iostream>
 #include <memory>
 #include <string>
 
@@ -14,10 +14,12 @@ namespace adt {
         loadIcon();
     }
 
-    void Lline::lineUI(const std::string& name) {
+    void Lline::lineUI(const std::string& id) {
         const ImVec2 icon_file_size(64.0f, 64.0f);
         const ImVec2 icon_button_size(24.0f, 24.0f);
         const float spacing = ImGui::GetStyle().ItemSpacing.x;
+
+        const std::string name = Paths::getInstance().getTempPath(id);
     
         ImGui::BeginGroup();
         {
@@ -29,7 +31,13 @@ namespace adt {
     
         ImGui::BeginGroup();
         {
+            float total_available = ImGui::GetContentRegionAvail().x;
+            float right_icons_width = icon_button_size.x + spacing;
+            float text_width_limit = total_available - right_icons_width;
+
+            ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + text_width_limit);
             ImGui::TextWrapped("%s", name.c_str());
+            ImGui::PopTextWrapPos();
     
             uintmax_t size = std::filesystem::file_size(name.c_str());
             double size_in_mb = static_cast<double>(size) / (1024 * 1024);
@@ -50,7 +58,7 @@ namespace adt {
 
             ImDrawList* draw = ImGui::GetWindowDrawList();
 
-            ImVec2 icon_pos_folder = ImVec2(icon_x, group_start_y);
+            ImVec2 icon_pos_folder = ImVec2(icon_x, group_start_y + 4.0f);
             ImGui::SetCursorScreenPos(icon_pos_folder);
 
             ImGui::InvisibleButton("##open_file", icon_button_size);
@@ -73,8 +81,6 @@ namespace adt {
             if (ImGui::IsItemClicked()) {
                 dialog = std::make_shared<adt::ADTFileDialog>();
                 dialog->OpenOutputDirAndSelect(name);
-
-                std::cout << "Clicked open_file" << std::endl;
             }
 
             ImVec2 icon_pos_bin = ImVec2(icon_x, icon_pos_folder.y + icon_button_size.y + spacing);
@@ -97,14 +103,14 @@ namespace adt {
                 ImVec2(icon_pos_bin.x + icon_button_size.x, icon_pos_bin.y + icon_button_size.y)
             );
 
-            if (ImGui::IsItemClicked()) {
-                std::cout << "Clicked recycle_bin" << std::endl;
+            if (ImGui::IsItemClicked() && !Flags::getInstance().GetLIsDelete() && !Flags::getInstance().GetCompress()) {
+                Flags::getInstance().SetLIsDelete(true);
+
+                deleteLine(id);
             }
         }
         ImGui::EndGroup();
     }
-    
-    
 
     void Lline::loadIcon() {
         icons["audio"] = std::make_unique<Icon>(Paths::getInstance().GetPath("icon_audio"));
@@ -118,5 +124,9 @@ namespace adt {
             return it->second.get();
         }
         return nullptr;
+    }
+
+    void Lline::deleteLine(const std::string& id) {       
+        Paths::getInstance().removeTempPath(id);
     }
 }

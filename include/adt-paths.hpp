@@ -36,5 +36,6 @@ namespace adt {
         std::unordered_map<std::string, std::string> temp_pool;
 
         void registerPath(const std::string& name, const std::string& path);
+        void reindexTempPool();
     };
 }

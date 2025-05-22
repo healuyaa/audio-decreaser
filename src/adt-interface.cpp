@@ -8,6 +8,7 @@
 #include "imgui.h"
 
 #include <cstddef>
+#include <utility>
 #include <windows.h>
 #include <commdlg.h>
 #include <filesystem>
@@ -20,7 +21,20 @@ namespace adt {
     }
 
     void Interface::UInterface() {
-        ImGui::Begin("##top tab", NULL);
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+
+        ImGuiWindowFlags window_flags = 
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoCollapse |
+            ImGuiWindowFlags_NoBringToFrontOnFocus |
+            ImGuiWindowFlags_NoNavFocus;
+
+        ImGui::Begin("##main window", nullptr, window_flags);
 
         ImVec2 window_size = ImGui::GetContentRegionAvail();
 
@@ -71,8 +85,7 @@ namespace adt {
         ImGui::BeginGroup();
 
         if(Paths::getInstance().GetSizeTempPool() != Llines.size()) {
-            auto lline = std::make_unique<Lline>();
-            Llines.push_back(std::move(lline));
+            ReindexLlines();
         }
 
         for(int i = 0; i < Llines.size(); ++i) {
@@ -95,7 +108,7 @@ namespace adt {
                     draw->AddRectFilled(min, max, ImColor(hover_bg));
                 }
 
-                Llines[i]->lineUI(Paths::getInstance().getTempPath(std::to_string(i)));
+                Llines[i]->lineUI(std::to_string(i));
             }
 
             ImGui::PopStyleColor();
@@ -178,5 +191,16 @@ namespace adt {
         Llines.clear();
         Rlines.clear();
         Paths::getInstance().clearTempPath();
+    }
+
+    void Interface::ReindexLlines() {
+        Llines.clear();
+
+        for(size_t i = 0; i < Paths::getInstance().GetSizeTempPool(); ++i) {
+            auto lline = std::make_unique<Lline>();
+            Llines.push_back(std::move(lline));
+        }
+
+        Flags::getInstance().SetLIsDelete(false);
     }
 }

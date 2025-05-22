@@ -3,7 +3,6 @@
 #include "adt-paths.hpp"
 
 #include <filesystem>
-#include <iostream>
 #include <mutex>
 #include <string>
 #include <shlobj.h>
@@ -60,7 +59,6 @@ namespace adt {
                 {
                     std::lock_guard<std::mutex> lock(mutex_);
                     Paths::getInstance().addTempPath(path);
-                    std::cout << path << std::endl;
                 }
     
                 CoTaskMemFree(pszFilePath);
@@ -145,8 +143,6 @@ namespace adt {
                 std::lock_guard<std::mutex> lock(mutex_);
                 for (const auto& wav : wavFiles) {
                     Paths::getInstance().addTempPath(wav.string());
-
-                    std::cout << wav.string() << std::endl;
                 }
             }
     
@@ -161,7 +157,6 @@ namespace adt {
         std::wstring w_path(std::filesystem::absolute(path));
 
         if(!std::filesystem::exists(path)) {
-            std::wcout << "not exist";
             return;
         }
 
@@ -178,7 +173,7 @@ namespace adt {
             {
                 std::lock_guard<std::mutex> lock(mutex_);
                 if((INT_PTR)result <= 32) {
-                    std::wcout << "shell err code " << (INT_PTR)result << std::endl;
+                    return;
                 }
             }
 
@@ -186,12 +181,11 @@ namespace adt {
         }).detach();
     }
 
-    const void ADTFileDialog::OpenOutputDirAndSelect(const std::string_view& path) {
+    const void ADTFileDialog::OpenOutputDirAndSelect(const std::string_view& path) {       
         std::filesystem::path f_path(path);
         std::wstring w_path = std::filesystem::absolute(f_path).wstring();
 
         if (!std::filesystem::exists(f_path)) {
-            std::wcout << L"[ADT] Path does not exist: " << w_path << std::endl;
             Flags::getInstance().SetOpenOutput(false);
             return;
         }
@@ -212,7 +206,7 @@ namespace adt {
             }
 
             if (FAILED(hr)) {
-                std::wcout << L"[ADT] Failed to open and select file: " << hr << std::endl;
+                return;
             }
 
             

@@ -12,7 +12,7 @@ namespace adt {
         Lline();
         ~Lline() override = default;
 
-        void lineUI(const std::string& name);
+        void lineUI(const std::string& id);
 
         private:
         std::unordered_map<std::string, std::unique_ptr<Icon>> icons;
@@ -20,5 +20,7 @@ namespace adt {
 
         void loadIcon() override;
         Icon* getIcon(const std::string) override;
+
+        void deleteLine(const std::string& id);
     };
 }

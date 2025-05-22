@@ -7,6 +7,7 @@ namespace adt {
         return instance;
     }
 
+
     //methods for set/get bool flags from FInterface
     void Flags::SetLoadTopMenu(bool b) {
         finterface.is_load_top_menu = b;
@@ -89,7 +90,30 @@ namespace adt {
     }
     //methods for set/get bool flags from FTopline
 
-    //methods for set/get bool flags from FTopline
+
+    //methods for set/get bool flags from FLLine
+    void Flags::SetLIsDelete(bool b) {
+        flline.is_delete = b;
+    }
+
+    bool Flags::GetLIsDelete() {
+        return flline.is_delete;
+    }
+    //methods for set/get bool flags from FLLine
+
+
+    //methods for set/get bool flags from FRLine
+    void Flags::SetRIsDelete(bool b) {
+        frline.is_delete = b;
+    }
+
+    bool Flags::GetRIsDelete() {
+        return frline.is_delete;
+    }
+    //methods for set/get bool flags from FRLine
+
+
+    //methods for set/get bool flags from FAudioCompress
     void Flags::SetHqModel(bool b) {
         std::lock_guard<std::mutex> lock(mutex_);
         faudiocompress.is_hq_model = b;
@@ -107,9 +131,10 @@ namespace adt {
     int Flags::GetCountThreads() {
         return faudiocompress.count_threads;
     }
-    //methods for set/get bool flags from FTopline
+    //methods for set/get bool flags from FAudioCompress
 
-    //methods for set/get bool flags from FTopline
+
+    //methods for set/get bool flags from FAudioRunner
     void Flags::SetIsCountChangeThreads(bool b) {
         faudiorunner.is_change_count_threads = b; 
     }
@@ -117,5 +142,16 @@ namespace adt {
     bool Flags::GetIsCountChangeThreads() {
         return faudiorunner.is_change_count_threads;
     }
-    //methods for set/get bool flags from FTopline
+    //methods for set/get bool flags from FAudioRunner
+
+
+    //methods for set/get bool flags from FInterfaceComfirm
+    void Flags::SetIsConfirm(bool b) {
+        finterfaceconfirm.is_confirm = b;
+    }
+
+    bool Flags::GetIsConfirm() {
+        return finterfaceconfirm.is_confirm;
+    }
+    //methods for set/get bool flags from FInterfaceComfirm
 }

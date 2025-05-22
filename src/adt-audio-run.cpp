@@ -7,7 +7,6 @@
 
 #include <cstddef>
 #include <filesystem>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -42,10 +41,6 @@ namespace adt {
             tools->splitAudio(path_o);
             auto paths_fragments = tools->GetCutResult();
 
-            for(const auto &p: paths_fragments) {
-                std::cout << p.string() << std::endl;
-            }
-
             FileTools::getInstance().delete_audio(path_o.string());
             path.clear();
 
@@ -70,10 +65,6 @@ namespace adt {
                 std::filesystem::path p(spaths_fragments[i]);
                 compressed_paths[i] = p.parent_path().string() + "/compressed_" + p.filename().string();
                 spaths_fragments[i] = p.parent_path().string() + "/compressed_" + p.filename().string();
-            }
-
-            for(const auto& cp: compressed_paths) {
-                std::cout << cp << std::endl;
             }
 
             std::filesystem::path compressed_audio = std::string(Paths::getInstance().GetPath("results")) + "/compressed_" + path_o.filename().string();

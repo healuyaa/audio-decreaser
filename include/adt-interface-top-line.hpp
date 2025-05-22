@@ -2,6 +2,7 @@
 
 #include "adt-file-dialog.hpp"
 #include "adt-interface-Iline.hpp"
+#include "adt-interface-confirm.hpp"
 #include "adt-interface-settings.hpp"
 
 #include <memory>
@@ -29,5 +30,6 @@ namespace adt {
 
         std::shared_ptr<adt::ADTFileDialog> dialog;
         std::shared_ptr<adt::Settigns> settings;
+        std::shared_ptr<adt::ConfirmWindow> confirm;
     };
 }

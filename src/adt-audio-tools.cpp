@@ -4,7 +4,6 @@
 #include "sndfile.h"
 
 #include <filesystem>
-#include <iostream>
 #include <string>
 #include <vector>
 #include <windows.h>
@@ -20,8 +19,7 @@ namespace adt {
         SF_INFO sfinfo;        
         SNDFILE* in_file = sf_open(split_path.c_str(), SFM_READ, &sfinfo);
 
-        if(!in_file) {
-            std::cerr << "err open sndfile(audio)" << std::endl;
+        if(!in_file) {            
             return;
         }
 
@@ -49,14 +47,13 @@ namespace adt {
             SNDFILE* out_file = sf_open(segment_path.c_str(), SFM_WRITE, &out_info);
 
             if(!out_file) {
-                std::cerr << "err create fragment: " << i << std::endl;
+                return;                
             }
 
             sf_readf_short(in_file, buffer.data(), segment_frames);
             sf_writef_short(out_file, buffer.data(), segment_frames);
 
             sf_close(out_file);
-            std::cout << "saved fragment: " << i << ' ' << segment_path << std::endl;
         }
 
         if(last_segment_frames > 0) {
@@ -71,7 +68,7 @@ namespace adt {
             SNDFILE* out_file = sf_open(segment_path.c_str(), SFM_WRITE, &out_info);
 
             if(!out_file) {
-                std::cerr << "err create fragment: " << segment_count << std::endl;
+                return;
             } else {
                 buffer.resize(last_segment_frames * channels);
 
@@ -79,7 +76,6 @@ namespace adt {
                 sf_writef_short(out_file, buffer.data(), last_segment_frames);
 
                 sf_close(out_file);
-                std::cout << "saved fragment: " << segment_count << ' ' << segment_path << std::endl;
             }
         }
 
@@ -96,8 +92,7 @@ namespace adt {
         for (size_t i = 0; i < paths.size(); ++i) {
             std::string path = utf16to1251(paths[i]);
             SNDFILE* infile = sf_open(path.c_str(), SFM_READ, &sfinfo_in);
-            if (!infile) {
-                std::cerr << "Error opening file: " << paths[i].string() << "\n";
+            if (!infile) {                
                 continue;
             }
     
@@ -107,13 +102,11 @@ namespace adt {
                 std::string path_o = utf16to1251(compressed_audio);
                 outfile = sf_open(path_o.c_str(), SFM_WRITE, &sfinfo_out);
                 if (!outfile) {
-                    std::cerr << "Error creating output file: " << compressed_audio << "\n";
                     sf_close(infile);
                     return;
                 }
             } else {
                 if (sfinfo_in.channels != sfinfo_out.channels || sfinfo_in.samplerate != sfinfo_out.samplerate) {
-                    std::cerr << "Incompatible audio file: " << paths[i].string() << "\n";
                     sf_close(infile);
                     continue;
                 }
@@ -129,8 +122,6 @@ namespace adt {
     
         sf_writef_short(outfile, allSamples.data(), allSamples.size() / sfinfo_out.channels);
         sf_close(outfile);
-    
-        std::cout << "Concatenation complete: " << compressed_audio << std::endl;
     }
 
     std::filesystem::path AudioTools::GetUniquePath(const std::filesystem::path& base_path) {
@@ -144,7 +135,6 @@ namespace adt {
             );
             ++counter;
         }
-        std::cout << "Exist path: " << unique_path.string();
         return unique_path;
     }
 

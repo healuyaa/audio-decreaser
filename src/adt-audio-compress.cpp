@@ -5,7 +5,6 @@
 
 #include <cstdlib>
 #include <filesystem>
-#include <iostream>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -48,13 +47,7 @@ namespace adt {
             auto value = GetNextElement();
             if (!value.has_value()) break;
 
-            auto command = generate_command(std::filesystem::path(value.value())) + " > nul 2>&1";
-
-            {
-                std::lock_guard<std::mutex> lock(cout_mutex);
-                std::cout << "[thread " << id << "] work: " << command << std::endl;
-                // fix logic
-            }
+            auto command = generate_command(std::filesystem::path(value.value())) + " > nul 2>&1";            
 
             system(command.c_str());
 
