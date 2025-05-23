@@ -67,7 +67,7 @@ namespace adt {
 
         tools = std::make_shared<adt::AudioTools>();
 
-        std::string command = "cd ../model && model-v2.exe " + tools->utf16to1251(input) + ' ' + tools->utf16to1251(output_path);
+        std::string command = "cd ../model && model-v3.exe " + tools->utf16to1251(input) + ' ' + tools->utf16to1251(output_path);
         command += Flags::getInstance().GetHqModel() ? " --hq" : "";
 
         return command;
