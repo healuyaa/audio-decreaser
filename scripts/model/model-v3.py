@@ -49,7 +49,7 @@ def encodec_model_48khz(model_name: str):
     return model
 
 MODELNAMES = {
-    'encodec_24khz': 'models/encodec_24khz.th',
+    'encodec_24khz': 'models/checkpoint_24khz.th',
     'encodec_48khz': 'models/encodec_48khz.th',
 }
 
