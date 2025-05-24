@@ -16,5 +16,7 @@ namespace adt {
         private:
         int number_threads;
         std::shared_ptr<AudioTools> tools;
+
+        void clearDirector(const std::filesystem::path& path);
     };
 }

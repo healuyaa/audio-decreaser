@@ -167,7 +167,7 @@ namespace adt {
                 ImGui::OpenPopup("Settings");
             }
 
-            if(Flags::getInstance().GetSettings()) {                
+            if(Flags::getInstance().GetSettings()) {
                 settings->runUI();
             }
         }

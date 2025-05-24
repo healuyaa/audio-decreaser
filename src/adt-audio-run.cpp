@@ -24,6 +24,19 @@ namespace adt {
             Flags::getInstance().SetIsCountChangeThreads(false);
         }
 
+        bool is_empty_a = std::filesystem::directory_iterator(
+            std::filesystem::absolute((Paths::getInstance().GetPath("audio_dir")))) == std::filesystem::directory_iterator();
+        bool is_empty_f = std::filesystem::directory_iterator(
+            std::filesystem::absolute((Paths::getInstance().GetPath("fragments_dir")))) == std::filesystem::directory_iterator();
+
+        if(!is_empty_a) {
+            clearDirector(std::filesystem::absolute((Paths::getInstance().GetPath("audio_dir"))));
+        }
+
+        if(!is_empty_f) {
+            clearDirector(std::filesystem::absolute((Paths::getInstance().GetPath("fragments_dir"))));
+        }        
+
         for(std::size_t i = 0; i < Paths::getInstance().GetSizeTempPool(); ++i) {
             tools = std::make_shared<adt::AudioTools>();
 
@@ -81,5 +94,19 @@ namespace adt {
 
     void AudioRunner::ChangeThreads(int n) {
         number_threads = n;
+    }
+
+    void AudioRunner::clearDirector(const std::filesystem::path& path) {
+        if(!std::filesystem::exists(path) || !std::filesystem::is_directory(path)) {
+            return;
+        }
+
+        for(const auto& entry: std::filesystem::directory_iterator(path)) {
+            try {
+            std::filesystem::remove(entry);
+            } catch (std::filesystem::filesystem_error& e) {
+                return;
+            }
+        }
     }
 }
